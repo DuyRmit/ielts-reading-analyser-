@@ -1,0 +1,2058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IELTS Reading Analyser , Passage 1: How tennis rackets have changed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500;600&display=swap"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0f172a; --navy-mid: #1e293b; --navy-light: #334155;
+    --slate: #64748b; --slate-light: #94a3b8; --border: #e2e8f0;
+    --bg: #f8fafc; --bg-card: #ffffff;
+    --indigo: #4f46e5; --indigo-light: #eef2ff; --indigo-dark: #3730a3;
+    --green: #16a34a; --green-light: #f0fdf4; --green-border: #bbf7d0;
+    --red: #dc2626; --red-light: #fef2f2; --red-border: #fecaca;
+    --amber: #d97706; --amber-light: #fffbeb;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --font-serif: 'Lora', Georgia, serif;
+    --radius: 8px; --radius-lg: 12px;
+  }
+  body { font-family: var(--font-body); background: var(--bg); color: var(--navy); line-height: 1.6; overflow: hidden; }
+
+  /* ── TOPBAR ── */
+  /* ── TOPBAR ── */
+  .topbar {
+    background: white; border-bottom: 1px solid var(--border);
+    padding: 0 12px; height: 52px; min-height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; z-index: 200;
+    width: 100%; box-sizing: border-box; overflow: hidden;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .topbar-brand { font-family: var(--font-serif); font-size: 15px; color: var(--navy); font-weight: 500; white-space: nowrap; }
+  .topbar-brand span { color: var(--indigo); }
+  .timer-box {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--navy); color: white;
+    padding: 4px 10px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0;
+  }
+  .timer-box.warning { background: #dc2626; }
+  .api-key-wrap { display: flex; align-items: center; gap: 6px; flex-shrink: 1; min-width: 0; }
+  .api-key-wrap label { font-size: 11px; color: var(--slate); white-space: nowrap; flex-shrink: 0; }
+  .api-key-wrap input {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--navy);
+    font-size: 11px; padding: 4px 8px;
+    width: clamp(120px, 15vw, 200px);
+    outline: none; min-width: 0;
+  }
+  .api-key-wrap input:focus { border-color: var(--indigo); }
+
+  /* ── PART HEADER BAR ── */
+  .part-header-bar {
+    background: #f1f5f9; border-bottom: 1px solid var(--border);
+    padding: 6px 12px; display: flex; align-items: center; gap: 10px;
+    height: 40px; min-height: 40px; overflow: hidden;
+    width: 100%; box-sizing: border-box;
+  }
+  .part-tabs { display: flex; gap: 2px; flex-shrink: 0; }
+  .part-tab {
+    padding: 4px 10px; font-size: 12px; font-weight: 500;
+    border: 1px solid transparent; border-radius: var(--radius);
+    cursor: pointer; color: var(--slate); background: transparent;
+    transition: all 0.12s; white-space: nowrap;
+  }
+  .part-tab.active {
+    background: white; border-color: var(--border);
+    color: var(--navy); font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .part-tab:hover:not(.active) { color: var(--navy); background: rgba(255,255,255,0.6); }
+  .part-header-desc { font-size: 12px; color: var(--slate); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* ── SPLIT LAYOUT ── */
+  .split-container {
+    display: flex;
+    height: calc(100vh - 52px - 40px - 48px);
+    overflow: hidden; position: relative;
+    width: 100%; box-sizing: border-box;
+  }
+  .passage-pane {
+    overflow-y: auto; overflow-x: hidden;
+    padding: 20px 20px;
+    background: white; flex-shrink: 0;
+    min-width: 200px; max-width: 70%;
+    box-sizing: border-box;
+  }
+  .passage-pane h2 {
+    font-family: var(--font-serif); font-size: 18px; font-weight: 500;
+    color: var(--navy); margin-bottom: 16px; line-height: 1.4;
+  }
+  .passage-text { font-size: 14px; line-height: 1.8; color: var(--navy-mid); font-family: var(--font-serif); }
+  .passage-text p { margin-bottom: 12px; }
+  .para-letter { font-weight: 700; font-family: var(--font-body); color: var(--navy); margin-right: 5px; font-size: 13px; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 4px; background: var(--border); cursor: col-resize;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; position: relative; transition: background 0.15s;
+  }
+  .divider:hover, .divider.dragging { background: var(--indigo); }
+  .divider-handle {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: white; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--slate); position: absolute;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1); z-index: 10; user-select: none;
+    pointer-events: none;
+  }
+  .divider:hover .divider-handle, .divider.dragging .divider-handle { border-color: var(--indigo); color: var(--indigo); }
+
+  /* ── QUESTIONS PANE ── */
+  .questions-pane {
+    flex: 1; min-width: 0; overflow-y: auto; overflow-x: hidden;
+    padding: 14px 14px 0; background: var(--bg);
+    box-sizing: border-box;
+  }
+  .group-header-bar {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 10px 12px; margin-bottom: 12px;
+  }
+  .group-header-bar h3 { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+  .group-header-bar p { font-size: 11px; color: var(--slate); white-space: pre-line; line-height: 1.5; }
+  .question-item { margin-bottom: 14px; }
+  .question-label { font-size: 13px; color: var(--navy-mid); margin-bottom: 7px; line-height: 1.5; }
+  .q-num { font-weight: 700; color: var(--navy); margin-right: 5px; font-size: 12px; }
+  .options-list { display: flex; flex-direction: column; gap: 4px; }
+  .option-btn {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 7px 10px; border: 1px solid var(--border);
+    border-radius: var(--radius); background: white;
+    cursor: pointer; font-size: 12px; text-align: left;
+    transition: all 0.12s; color: var(--navy-mid); line-height: 1.4;
+    width: 100%; box-sizing: border-box;
+  }
+  .option-btn:hover { border-color: #94a3b8; background: #f8fafc; }
+  .option-btn.selected { background: var(--indigo-light); border-color: var(--indigo); color: var(--indigo-dark); }
+  .option-radio {
+    width: 15px; height: 15px; border-radius: 50%;
+    border: 2px solid var(--border); flex-shrink: 0; margin-top: 1px;
+    transition: all 0.12s; background: white;
+  }
+  .option-btn.selected .option-radio { border-color: var(--indigo); background: var(--indigo); box-shadow: inset 0 0 0 3px white; }
+  .option-check {
+    width: 15px; height: 15px; border-radius: 3px;
+    border: 2px solid var(--border); flex-shrink: 0; margin-top: 1px;
+    transition: all 0.12s; background: white;
+  }
+  .option-btn.selected .option-check { border-color: var(--indigo); background: var(--indigo); }
+  .fill-input {
+    width: 100%; padding: 7px 10px; border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 12px;
+    font-family: var(--font-body); outline: none; box-sizing: border-box;
+    transition: border-color 0.15s; color: var(--navy); background: white;
+  }
+  .fill-input:focus { border-color: var(--indigo); box-shadow: 0 0 0 2px var(--indigo-light); }
+  .options-bank {
+    background: #f8fafc; border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 8px 10px;
+    margin-bottom: 10px; font-size: 11px; color: var(--slate);
+    display: flex; flex-wrap: wrap; gap: 3px 8px;
+  }
+  .bank-item strong { color: var(--navy); }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    height: 48px; min-height: 48px; background: white;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 10px;
+    gap: 0; width: 100%; box-sizing: border-box; overflow: hidden;
+  }
+  /* Part selector tabs on left */
+  .bottom-nav-part-tabs { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
+  .bottom-part-tab {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 3px 8px; border-radius: var(--radius); border: 1px solid var(--border);
+    background: var(--bg); cursor: pointer; font-family: var(--font-body);
+    transition: all 0.12s; min-width: 38px; line-height: 1.2;
+  }
+  .bottom-part-tab:hover { border-color: var(--indigo); background: var(--indigo-light); }
+  .bottom-part-tab.active { background: var(--navy); border-color: var(--navy); }
+  .bottom-part-tab .bpt-label { font-size: 10px; font-weight: 700; color: var(--slate); letter-spacing: 0.3px; }
+  .bottom-part-tab.active .bpt-label { color: white; }
+  .bottom-part-tab .bpt-count { font-size: 9px; color: var(--slate-light); }
+  .bottom-part-tab.active .bpt-count { color: rgba(255,255,255,0.7); }
+  .bottom-part-tab .bpt-count.done { color: var(--green); }
+  .bottom-part-tab.active .bpt-count.done { color: #86efac; }
+  /* Pills for active part only */
+  .bottom-pills {
+    display: flex; gap: 3px; align-items: center;
+    flex: 1; min-width: 0; overflow: hidden;
+    flex-wrap: wrap; max-height: 36px;
+  }
+  .q-pill {
+    width: 22px; height: 22px; border-radius: 3px;
+    font-size: 10px; font-weight: 500; border: none;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s; background: var(--bg); color: var(--slate);
+    font-family: var(--font-body); flex-shrink: 0;
+  }
+  .q-pill:hover { background: var(--border); color: var(--navy); }
+  .q-pill.answered { background: #dbeafe; color: #1e40af; }
+  .q-pill.active { background: var(--navy); color: white; font-weight: 700; }
+  .q-pill.active.answered { background: var(--indigo); }
+  .bottom-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .nav-btn {
+    width: 36px; height: 36px; border-radius: var(--radius);
+    background: var(--navy); color: white; border: none;
+    font-size: 16px; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    transition: background 0.12s; font-family: var(--font-body);
+  }
+  .nav-btn:hover { background: var(--navy-light); }
+  .nav-btn:disabled { background: var(--border); color: var(--slate-light); cursor: not-allowed; }
+  .btn-submit-final {
+    background: var(--indigo); color: white; border: none;
+    padding: 8px 18px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: var(--font-body); transition: background 0.12s;
+    white-space: nowrap;
+  }
+  .btn-submit-final:hover { background: var(--indigo-dark); }
+  .btn-submit-final:disabled { background: var(--slate-light); cursor: not-allowed; }
+  .nav-divider { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
+
+  /* ── LOADING ── */
+  .loading-screen {
+    height: calc(100vh - 52px); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 20px;
+  }
+  .loading-icon {
+    width: 52px; height: 52px; border: 3px solid var(--border);
+    border-top-color: var(--indigo); border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-screen h2 { font-family: var(--font-serif); font-size: 22px; font-weight: 400; color: var(--navy); }
+  .loading-screen p { font-size: 14px; color: var(--slate); }
+  .loading-dots span { animation: blink 1.4s infinite; }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,80%,100%{opacity:0;} 40%{opacity:1;} }
+
+  /* ── REPORT ── */
+  .report-page { height: calc(100vh - 52px); overflow: hidden; display: flex; flex-direction: column; background: var(--bg); }
+  .report-layout { flex: 1; overflow-y: auto; padding: 20px 24px 40px; }
+  .report-header { margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .report-header h1 { font-family: var(--font-serif); font-size: 28px; font-weight: 500; color: var(--navy); margin-bottom: 4px; }
+  .report-header p { font-size: 14px; color: var(--slate); }
+  .score-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 40px; }
+  .score-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px 20px; }
+  .score-card .label { font-size: 11px; color: var(--slate); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .score-card .value { font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1; }
+  .score-card .sub { font-size: 12px; color: var(--slate-light); margin-top: 2px; }
+  .report-section { margin-bottom: 44px; }
+  .report-section h2 { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--indigo); }
+  .breakdown-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .breakdown-card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+  .breakdown-card .type-name { font-size: 13px; font-weight: 600; color: var(--navy-mid); margin-bottom: 6px; }
+  .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+  .progress-fill { height: 100%; border-radius: 3px; }
+  .breakdown-card .pct { font-size: 13px; color: var(--slate); }
+  .q-card { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 10px; border-left: 4px solid transparent; }
+  .q-card.correct { border-left-color: var(--green); }
+  .q-card.wrong { border-left-color: var(--red); }
+  .q-card-header { padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; background: white; user-select: none; }
+  .q-card.correct .q-card-header:hover { background: var(--green-light); }
+  .q-card.wrong .q-card-header:hover { background: var(--red-light); }
+  .q-badge { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+  .q-badge.correct { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+  .q-badge.wrong { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
+  .q-card-question { font-size: 13px; color: var(--navy-mid); flex: 1; line-height: 1.5; }
+  .q-card-num { font-size: 12px; color: var(--slate); font-weight: 700; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+  .q-card-chevron { color: var(--slate-light); flex-shrink: 0; transition: transform 0.2s; margin-top: 2px; font-style: normal; }
+  .q-card.open .q-card-chevron { transform: rotate(180deg); }
+  .q-card-body { padding: 14px 16px; background: var(--bg); border-top: 1px solid var(--border); display: none; flex-direction: column; gap: 12px; }
+  .q-card.open .q-card-body { display: flex; }
+  .answer-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+  .answer-pill { font-size: 12px; padding: 3px 9px; border-radius: 4px; font-weight: 600; }
+  .answer-pill.student-correct { background: var(--green-light); color: var(--green); }
+  .answer-pill.student-wrong { background: var(--red-light); color: var(--red); }
+  .answer-pill.correct-ans { background: #ede9fe; color: #5b21b6; }
+  .answer-pill-label { font-size: 11px; color: var(--slate); margin-bottom: 3px; }
+  .error-tag { display: inline-flex; font-size: 11px; background: var(--amber-light); color: var(--amber); border: 1px solid #fde68a; padding: 2px 7px; border-radius: 4px; font-weight: 700; font-family: monospace; }
+  .detail-row { font-size: 13px; line-height: 1.6; color: var(--navy-mid); }
+  .detail-label { font-weight: 700; color: var(--navy); margin-right: 5px; }
+  .passage-quote { background: white; border-left: 3px solid var(--indigo); padding: 7px 12px; font-family: var(--font-serif); font-style: italic; font-size: 13px; color: var(--navy-mid); border-radius: 0 var(--radius) var(--radius) 0; }
+  .passage-location-tag { font-size: 11px; background: var(--indigo-light); color: var(--indigo); padding: 2px 7px; border-radius: 4px; font-weight: 700; display: inline-block; margin-bottom: 5px; }
+  .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+  .vocab-card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }
+  .vocab-word { font-size: 15px; font-weight: 700; color: var(--navy); }
+  .vocab-ipa { font-family: monospace; font-size: 12px; color: var(--slate); margin-bottom: 5px; }
+  .vocab-def { font-size: 13px; color: var(--navy-mid); margin-bottom: 5px; line-height: 1.5; }
+  .vocab-ex { font-size: 12px; color: var(--slate); font-style: italic; line-height: 1.5; }
+  .vocab-ex::before { content: '"'; } .vocab-ex::after { content: '"'; }
+  .error-state { text-align: center; padding: 40px; background: var(--red-light); border: 1px solid var(--red-border); border-radius: var(--radius-lg); margin: 40px auto; max-width: 500px; }
+  .error-state h3 { color: var(--red); margin-bottom: 8px; }
+  .error-state p { font-size: 14px; color: var(--slate); margin-bottom: 16px; }
+  .btn-retry { background: var(--red); color: white; border: none; padding: 10px 24px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font-body); }
+  .section-chip { display: inline-block; background: var(--navy); color: white; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .btn-submit-report { background: var(--indigo); color: white; border: none; padding: 10px 28px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: var(--font-body); }
+  .btn-submit-report:hover { background: var(--indigo-dark); }
+
+  /* ── PARAGRAPH MATCHING GRID ── */
+  .para-match-table {
+    width: 100%; border-collapse: collapse;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; background: white; font-size: 13.5px;
+  }
+  .para-match-table thead tr { background: #f1f5f9; }
+  .para-match-table thead th {
+    padding: 10px 6px; text-align: center; font-weight: 700;
+    font-size: 13px; color: var(--navy); border-left: 1px solid var(--border);
+    width: 38px;
+  }
+  .para-match-table thead th:first-child { text-align: left; border-left: none; width: auto; padding-left: 12px; }
+  .para-match-table tbody tr { border-top: 1px solid var(--border); }
+  .para-match-table tbody tr:hover { background: #f8fafc; }
+  .para-match-table td {
+    padding: 12px 6px; text-align: center; vertical-align: middle;
+    border-left: 1px solid var(--border);
+  }
+  .para-match-table td:first-child {
+    text-align: left; border-left: none; padding: 12px 12px;
+    line-height: 1.5; color: var(--navy-mid);
+  }
+  .para-match-q-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border: 1.5px solid var(--navy);
+    border-radius: 3px; font-weight: 700; font-size: 12px;
+    color: var(--navy); margin-right: 10px; flex-shrink: 0;
+    vertical-align: middle;
+  }
+  .grid-radio {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid #cbd5e1; background: white; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.12s; flex-shrink: 0;
+  }
+  .grid-radio:hover { border-color: var(--indigo); }
+  .grid-radio.selected { border-color: var(--indigo); background: var(--indigo); box-shadow: inset 0 0 0 4px white; }
+
+  /* ── DRAG & DROP SUMMARY ── */
+  .dnd-container { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .dnd-chip-bank {
+    padding: 14px 16px; background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    min-height: 60px;
+  }
+  .dnd-chip-bank-label { font-size: 11px; font-weight: 700; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; width: 100%; margin-bottom: 2px; }
+  .dnd-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 10px; border-radius: 6px;
+    border: 1.5px solid var(--border); background: white;
+    font-size: 12.5px; font-weight: 500; color: var(--navy);
+    cursor: grab; user-select: none;
+    transition: all 0.12s; white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .dnd-chip:active { cursor: grabbing; }
+  .dnd-chip:hover:not(.used) { border-color: var(--indigo); color: var(--indigo); transform: translateY(-1px); box-shadow: 0 3px 8px rgba(79,70,229,0.15); }
+  .dnd-chip.dragging { opacity: 0.35; }
+  .dnd-chip.used { opacity: 0.3; cursor: default; }
+  .dnd-chip-letter { font-weight: 800; font-size: 11px; color: var(--indigo); background: var(--indigo-light); padding: 1px 5px; border-radius: 3px; }
+  .dnd-passage {
+    padding: 18px 20px; font-size: 14.5px; line-height: 2.4;
+    color: var(--navy-mid); font-family: var(--font-serif);
+  }
+  .dnd-blank {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 140px; height: 34px;
+    border: 2px dashed #cbd5e1; border-radius: 6px;
+    background: #f8fafc; vertical-align: middle;
+    margin: 0 4px; cursor: pointer; transition: all 0.15s;
+    position: relative; font-family: var(--font-body);
+  }
+  .dnd-blank.drag-over { border-color: var(--indigo); background: var(--indigo-light); box-shadow: 0 0 0 3px rgba(79,70,229,0.15); }
+  .dnd-blank.filled { border-style: solid; border-color: var(--indigo); background: var(--indigo-light); padding: 0 8px; gap: 6px; }
+  .dnd-blank-num {
+    position: absolute; top: -10px; left: 6px;
+    font-size: 10px; font-weight: 800; color: var(--indigo);
+    background: white; padding: 0 4px; border-radius: 3px;
+    border: 1px solid var(--indigo-light);
+    font-family: var(--font-body); line-height: 1.7;
+  }
+  .dnd-filled-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 600; color: var(--indigo-dark);
+    font-family: var(--font-body);
+  }
+  .dnd-filled-chip .dnd-chip-letter { background: var(--indigo); color: white; }
+  .dnd-remove-btn {
+    font-size: 14px; color: #94a3b8; cursor: pointer; line-height: 1;
+    padding: 0 2px; border-radius: 3px; font-family: sans-serif;
+    display: inline-flex; align-items: center;
+  }
+  .dnd-remove-btn:hover { color: var(--red); }
+  .dnd-empty-label { font-size: 11px; color: #94a3b8; }
+
+  /* ── 3-STEP DIAGNOSIS CARDS ── */
+  .diagnosis-step { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 10px; }
+  .step-header { display: flex; align-items: center; gap: 8px; padding: 7px 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
+  .step-num { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.3); }
+  .step-try { background: #1e3a5f; color: white; }
+  .step-explain { background: var(--navy); color: white; }
+  .step-self { background: #1a3a2a; color: white; }
+  .step-body { padding: 12px 14px; background: white; display: flex; flex-direction: column; gap: 8px; }
+  .try-again-q { display: flex; gap: 8px; font-size: 13px; color: var(--navy-mid); line-height: 1.5; }
+  .try-again-num { font-weight: 700; color: #1e3a5f; flex-shrink: 0; min-width: 16px; }
+  .explanation-text { font-size: 13px; color: var(--navy-mid); line-height: 1.6; }
+  .why-wrong-box { background: var(--red-light); border: 1px solid var(--red-border); border-radius: var(--radius); padding: 8px 12px; font-size: 13px; color: var(--navy-mid); line-height: 1.5; }
+  .wrong-opts-section { margin-top: 4px; }
+  .wrong-opts-label { font-size: 11px; font-weight: 700; color: var(--slate); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
+  .wrong-opt-row { display: flex; gap: 8px; align-items: flex-start; padding: 5px 0; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--navy-mid); line-height: 1.5; }
+  .wrong-opt-row:first-of-type { border-top: none; }
+  .wrong-opt-letter { font-weight: 800; color: var(--red); flex-shrink: 0; min-width: 28px; background: var(--red-light); padding: 1px 6px; border-radius: 3px; text-align: center; font-size: 11px; }
+  .wrong-opt-reason { flex: 1; }
+  .self-assess-label { font-size: 12px; color: var(--slate); margin-bottom: 8px; font-style: italic; }
+  .self-check-item { display: flex; align-items: flex-start; gap: 0; font-size: 13px; color: var(--navy-mid); line-height: 1.5; padding: 4px 0; cursor: pointer; border-radius: 4px; }
+  .self-check-item:hover { background: var(--bg); }
+
+  /* ── PASSAGE DIAGNOSIS LAYOUT (S1) ── */
+  .passage-diagnosis-layout {
+    display: flex; flex-direction: row;
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    overflow: hidden; margin-top: 12px;
+    height: calc(100vh - 52px - 200px);
+    min-height: 500px;
+  }
+  .pd-passage {
+    overflow-y: auto; padding: 20px 24px;
+    background: white; flex-shrink: 0;
+    min-width: 240px;
+  }
+  .pd-divider {
+    width: 6px; background: var(--border); cursor: col-resize;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background 0.15s; position: relative;
+    user-select: none;
+  }
+  .pd-divider:hover, .pd-divider.dragging { background: var(--indigo); }
+  .pd-divider-handle {
+    position: absolute; width: 24px; height: 24px; border-radius: 50%;
+    background: white; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--slate); pointer-events: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .pd-divider:hover .pd-divider-handle, .pd-divider.dragging .pd-divider-handle {
+    border-color: var(--indigo); color: var(--indigo);
+  }
+  @media (max-width: 1024px) {
+    .passage-diagnosis-layout { height: calc(100vh - 52px - 220px); }
+    .pd-divider { display: none; }
+    .pd-passage { width: 40% !important; }
+  }
+  @media (max-width: 768px) {
+    .passage-diagnosis-layout { flex-direction: column; height: auto; }
+    .pd-passage { width: 100% !important; max-height: 45vh; border-right: none; border-bottom: 1px solid var(--border); }
+    .pd-questions { max-height: 55vh; }
+    .pd-divider { display: none; }
+  }
+  .rpt-passage { font-size: 14px; line-height: 1.85; color: var(--navy-mid); font-family: var(--font-serif); }
+  .rpt-passage p { margin-bottom: 12px; }
+  .passage-highlight {
+    background: #bbf7d0; color: var(--navy);
+    border-radius: 2px; padding: 1px 0;
+    transition: background 0.2s;
+  }
+  .pd-questions {
+    overflow-y: auto; background: var(--bg); padding: 14px 14px 24px;
+  }
+
+  /* ── SPLASH SCREEN ── */
+  .splash-screen { min-height: 100vh; background: url('https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=1400&q=80') center/cover no-repeat; display: flex; align-items: flex-start; justify-content: center; padding: 20px; padding-top: 24px; position: relative; box-sizing: border-box; }
+  .splash-screen::before { content: ''; position: absolute; inset: 0; background: rgba(15,23,42,0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+  .splash-card { position: relative; z-index: 1; background: white; border-radius: 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.25); padding: 28px 28px 24px; max-width: 580px; width: 100%; box-sizing: border-box; }
+  .splash-badge { font-size: 42px; text-align: center; margin-bottom: 14px; }
+  .splash-title { font-family: Georgia, serif; font-size: 26px; font-weight: 700; color: var(--navy); text-align: center; margin: 0 0 12px; }
+  .splash-pills { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
+  .splash-pill { background: var(--indigo-light); color: var(--indigo-dark); font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.3px; }
+  .splash-warmup { background: #fafaf9; border: 1px solid #e7e5e4; border-radius: 12px; padding: 18px 20px; margin-bottom: 24px; font-size: 15px; color: var(--navy-mid); line-height: 1.75; }
+  .splash-warmup p { margin: 0 0 14px; }
+  .splash-warmup p:last-child { margin-bottom: 0; }
+  .warmup-hook { font-size: 14px; font-weight: 700; color: var(--navy) !important; }
+  .warmup-question { background: white; border-left: 3px solid var(--indigo); border-radius: 0 8px 8px 0; padding: 12px 14px; margin-top: 10px; }
+  .warmup-question p { margin: 0 0 6px; }
+  .warmup-question p:last-child { margin-bottom: 0; }
+  .splash-divider { height: 1px; background: var(--border); margin: 0 0 22px; }
+  .splash-key-section { margin-bottom: 20px; }
+  .splash-key-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .splash-key-label span { font-size: 13px; font-weight: 700; color: var(--navy); }
+  .splash-key-link { font-size: 12px; color: var(--indigo); text-decoration: none; font-weight: 600; }
+  .splash-key-link:hover { text-decoration: underline; }
+  .splash-key-row { display: flex; gap: 8px; }
+  .splash-key-input { flex: 1; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 13px; color: var(--navy); outline: none; transition: border-color 0.2s; }
+  .splash-key-input:focus { border-color: var(--indigo); }
+  .splash-validate-btn { background: var(--navy); color: white; border: none; border-radius: 10px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
+  .splash-validate-btn:hover:not(:disabled) { background: var(--indigo); }
+  .splash-validate-btn.validated { background: var(--green); cursor: default; }
+  .splash-validate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .splash-key-error { color: var(--red); font-size: 12px; margin-top: 6px; }
+  .splash-key-ok { color: var(--green); font-size: 12px; font-weight: 600; margin-top: 6px; }
+  .splash-start-btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background: var(--indigo); color: white; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+  .splash-start-btn:hover:not(:disabled) { background: var(--indigo-dark); transform: translateY(-1px); }
+  .splash-start-btn:disabled { background: var(--border); color: var(--slate); cursor: not-allowed; transform: none; }
+  .rpt-qblock {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    border-left: 4px solid transparent; margin-bottom: 10px;
+    transition: box-shadow 0.15s;
+  }
+  .rpt-qblock:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+  .rpt-qblock-correct { border-left-color: var(--green); }
+  .rpt-qblock-wrong { border-left-color: var(--red); }
+  .rpt-qblock-active { box-shadow: 0 0 0 2px var(--indigo); }
+  .rpt-qheader {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 10px 12px; flex-wrap: wrap;
+  }
+  .rpt-qnum {
+    width: 24px; height: 24px; border-radius: 4px;
+    font-size: 11px; font-weight: 800; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .rpt-qtext { font-size: 13px; color: var(--navy-mid); flex: 1; line-height: 1.5; }
+  .rpt-opts-list { padding: 4px 12px 10px 44px; display: flex; flex-direction: column; gap: 5px; }
+  .rpt-opt {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 12px; color: var(--navy-mid);
+    background: var(--bg);
+  }
+  .rpt-opt-radio {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid var(--border); flex-shrink: 0; background: white;
+  }
+  .rpt-opt-correct { background: var(--green-light); border-color: var(--green); color: var(--green); font-weight: 600; }
+  .rpt-opt-correct .rpt-opt-radio { border-color: var(--green); background: var(--green); box-shadow: inset 0 0 0 3px white; }
+  .rpt-opt-wrong { background: var(--red-light); border-color: var(--red); color: var(--red); font-weight: 600; }
+  .rpt-opt-wrong .rpt-opt-radio { border-color: var(--red); background: var(--red); box-shadow: inset 0 0 0 3px white; }
+  .rpt-opt-answer { background: #ede9fe; border-color: var(--indigo); color: var(--indigo-dark); font-weight: 600; }
+  .rpt-opt-answer .rpt-opt-radio { border-color: var(--indigo); background: var(--indigo); box-shadow: inset 0 0 0 3px white; }
+  .rpt-fill-row { display: flex; align-items: center; gap: 6px; padding: 6px 12px 10px 44px; flex-wrap: wrap; }
+  .rpt-feedback { border-top: 1px solid var(--border); }
+  .fb-tab-bar { display: flex; overflow-x: auto; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .fb-tab { background: none; border: none; border-bottom: 2px solid transparent; padding: 7px 12px; font-size: 11px; font-weight: 600; color: var(--slate); cursor: pointer; white-space: nowrap; }
+  .fb-tab:hover { color: var(--navy); }
+  .fb-tab-active { color: var(--indigo) !important; border-bottom-color: var(--indigo) !important; }
+  .fb-tab-body { padding: 12px; } color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .btn-try-again:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-reveal { background: white; color: var(--slate); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+  .btn-reveal:hover { border-color: var(--indigo); color: var(--indigo); }
+  .strategy-reminder { font-size: 12px; color: var(--navy-mid); line-height: 1.6; }
+  .strategy-reminder p { margin: 2px 0; }
+  .rpt-qblock { background: white; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; border-left: 4px solid transparent; margin-bottom: 10px; transition: box-shadow 0.15s; }
+  .rpt-qblock:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+  .rpt-qblock-correct { border-left-color: var(--green); }
+  .rpt-qblock-wrong { border-left-color: var(--red); }
+  .rpt-qblock-active { box-shadow: 0 0 0 2px var(--indigo) !important; }
+  .option-selected { background: var(--indigo-light) !important; border-color: var(--indigo) !important; color: var(--indigo-dark) !important; }
+  .radio-selected { border-color: var(--indigo) !important; background: var(--indigo) !important; box-shadow: inset 0 0 0 3px white; }
+  .rpt-selected-correct .option-radio { border-color: var(--green) !important; background: var(--green) !important; box-shadow: inset 0 0 0 3px white; }
+  .rpt-selected-wrong { background: var(--red-light) !important; border-color: var(--red) !important; color: var(--red) !important; }
+  .rpt-selected-wrong .option-radio { border-color: var(--red) !important; background: var(--red) !important; box-shadow: inset 0 0 0 3px white; }
+  .rpt-correct-answer { background: #ede9fe !important; border-color: var(--indigo) !important; color: var(--indigo-dark) !important; font-weight: 600; }
+  .rpt-correct-answer .option-radio { border-color: var(--indigo) !important; background: var(--indigo) !important; box-shadow: inset 0 0 0 3px white; }
+  .rpt-qitem-active { box-shadow: 0 0 0 2px var(--indigo) !important; }
+  .qrow {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    border-left: 4px solid transparent;
+    transition: box-shadow 0.15s;
+  }
+  .qrow:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .qrow-correct { border-left-color: var(--green); }
+  .qrow-wrong { border-left-color: var(--red); }
+  .qrow-active { box-shadow: 0 0 0 2px var(--indigo); }
+  .qrow-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px; flex-wrap: wrap;
+  }
+  .qrow-num {
+    width: 24px; height: 24px; border-radius: 4px;
+    font-size: 11px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .num-correct { background: var(--green-light); color: var(--green); }
+  .num-wrong { background: var(--red-light); color: var(--red); }
+  .qrow-text { font-size: 13px; color: var(--navy-mid); flex: 1; line-height: 1.4; }
+  .qrow-ans-badge {
+    font-size: 11px; font-weight: 700; color: var(--navy);
+    background: #ede9fe; padding: 2px 8px; border-radius: 4px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .qrow-expand-btn {
+    font-size: 11px; font-weight: 600; color: var(--indigo);
+    background: var(--indigo-light); border: none; border-radius: 4px;
+    padding: 3px 8px; cursor: pointer; white-space: nowrap;
+    flex-shrink: 0; font-family: var(--font-body);
+  }
+  .qrow-expand-btn:hover { background: var(--indigo); color: white; }
+
+  /* Hint section */
+  .qrow-hint {
+    padding: 8px 12px 8px 40px; background: #fffbeb;
+    border-top: 1px solid #fde68a; display: flex; flex-direction: column; gap: 4px;
+  }
+  .hint-label {
+    font-size: 10px; font-weight: 800; color: var(--amber);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;
+  }
+  .hint-q { display: flex; gap: 6px; font-size: 12px; color: var(--navy-mid); line-height: 1.45; }
+  .hint-num { font-weight: 700; color: var(--amber); flex-shrink: 0; }
+
+  /* Expanded section */
+  .qrow-expanded {
+    padding: 12px; background: var(--bg);
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 0;
+  }
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script>
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+var _React = React,
+  useState = _React.useState,
+  useRef = _React.useRef,
+  useEffect = _React.useEffect;
+
+// ─────────────────────────────────────────────
+// TEST DATA
+// ─────────────────────────────────────────────
+var testData = {
+  title: "IELTS 19 Academic Reading , Passage 1",
+  sections: [{
+    section_id: "S1",
+    title: "Reading Passage 1",
+    passage_title: "How tennis rackets have changed",
+    passage: "In 2016, the British professional tennis player Andy Murray was ranked as the world's number one. It was an incredible achievement by any standard \u2013 made even more remarkable by the fact that he did this during a period considered to be one of the strongest in the sport's history, competing against the likes of Rafael Nadal, Roger Federer and Novak Djokovic, to name just a few. Yet five years previously, he had been regarded as a talented outsider who entered but never won the major tournaments.\n\nOf the changes that account for this transformation, one was visible and widely publicised: in 2011, Murray invited former number one player Ivan Lendl onto his coaching team \u2013 a valuable addition that had a visible impact on the player's playing style. Another change was so subtle as to pass more or less unnoticed. Like many players, Murray has long preferred a racket that consists of two types of string: one for the mains (verticals) and another for the crosses (horizontals). While he continued to use natural string in the crosses, in 2012 he switched to a synthetic string for the mains. A small change, perhaps, but its importance should not be underestimated.\n\nThe modification that Murray made is just one of a number of options available to players looking to tweak their rackets in order to improve their games. 'Touring professionals have their rackets customised to their specific needs,' says Colin Triplow, a UK-based professional racket stringer. 'It's a highly important part of performance maximisation.' Consequently, the specific rackets used by the world's elite are not actually readily available to the public; rather, each racket is individually made to suit the player who uses it. Take the US professional tennis players Mike and Bob Bryan, for example: 'We're very particular with our racket specifications,' they say. 'All our rackets are sent from our manufacturer to Tampa, Florida, where our frames go through a . . . thorough customisation process.' They explain how they have adjusted not only racket length, but even experimented with different kinds of paint. The rackets they use now weigh more than the average model and also have a denser string pattern (i.e. more crosses and mains).\n\nThe primary reason for these modifications is simple: as the line between winning and losing becomes thinner and thinner, even these slight changes become more and more important. As a result, players and their teams are becoming increasingly creative with the modifications to their rackets as they look to maximise their competitive advantage.\n\nRacket modifications mainly date back to the 1970s, when the amateur German tennis player Werner Fischer started playing with the so-called spaghetti-strung racket. It created a string bed that generated so much topspin that it was quickly banned by the International Tennis Federation. However, within a decade or two, racket modification became a regularity. Today it is, in many ways, an aspect of the game that is equal in significance to nutrition or training.\n\nModifications can be divided into two categories: those to the string bed and those to the racket frame. The former is far more common than the latter: the choice of the strings and the tension with which they are installed is something that nearly all professional players experiment with. They will continually change it depending on various factors including the court surface, climatic conditions, and game styles. Some will even change it depending on how they feel at the time.\n\nAt one time, all tennis rackets were strung with natural gut made from the outer layer of sheep or cow intestines. This all changed in the early 1990s with the development of synthetic strings that were cheaper and more durable. They are made from three materials: nylon (relatively durable and affordable), Kevlar (too stiff to be used alone) or co-polyester (polyester combined with additives that enhance its performance). Even so, many professional players continue to use a 'hybrid set-up', where a combination of both synthetic and natural strings are used.\n\nOf the synthetics, co-polyester is by far the most widely used. It's a perfect fit for the style of tennis now played, where players tend to battle it out from the back of the court rather than coming to the net. Studies indicate that the average spin from a co-polyester string is 25% greater than that from natural string or other synthetics. In a sense, the development of co-polyester strings has revolutionised the game.\n\nHowever, many players go beyond these basic adjustments to the strings and make changes to the racket frame itself. For example, much of the serving power of US professional player Pete Sampras was attributed to the addition of four to five lead weights onto his rackets, and today many professionals have the weight adjusted during the manufacturing process.\n\nOther changes to the frame involve the handle. Players have individual preferences for the shape of the handle and some will have the handle of one racket moulded onto the frame of a different racket. Other players make different changes. The professional Portuguese player Gon\xE7alo Oliveira replaced the original grips of his rackets with something thinner because they had previously felt uncomfortable to hold.\n\nRacket customisation and modification have pushed the standards of the game to greater levels that few could have anticipated in the days of natural strings and heavy, wooden frames, and it's exciting to see what further developments there will be in the future.",
+    question_groups: [{
+      group_id: "G1",
+      type_label: "TRUE / FALSE / NOT GIVEN",
+      instructions: "Do the following statements agree with the information given in Reading Passage 1?\n\nIn boxes 1–7 on your answer sheet, write:\nTRUE , if the statement agrees with the information\nFALSE , if the statement contradicts the information\nNOT GIVEN , if there is no information on this",
+      questions: [{
+        question_id: "Q1", evidence: "five years previously, he had been regarded as a talented outsider",
+        type: "tfng",
+        question_text: "People had expected Andy Murray to become the world's top tennis player for at least five years before 2016.",
+        correct_answer: "FALSE",
+        options: ["TRUE", "FALSE", "NOT GIVEN"]
+      }, {
+        question_id: "Q2", evidence: "Another change was so subtle as to pass more or less unnoticed",
+        type: "tfng",
+        question_text: "The change that Andy Murray made to his rackets attracted a lot of attention.",
+        correct_answer: "FALSE",
+        options: ["TRUE", "FALSE", "NOT GIVEN"]
+      }, {
+        question_id: "Q3",
+        type: "tfng",
+        question_text: "Most of the world's top players take a professional racket stringer on tour with them.",
+        correct_answer: "NOT GIVEN",
+        options: ["TRUE", "FALSE", "NOT GIVEN"]
+      }, {
+        question_id: "Q4", evidence: "The rackets they use now weigh more than the average model",
+        type: "tfng",
+        question_text: "Mike and Bob Bryan use rackets that are light in comparison to the majority of rackets.",
+        correct_answer: "FALSE",
+        options: ["TRUE", "FALSE", "NOT GIVEN"]
+      }, {
+        question_id: "Q5",
+        type: "tfng",
+        question_text: "Werner Fischer played with a spaghetti-strung racket that he designed himself.",
+        correct_answer: "NOT GIVEN",
+        options: ["TRUE", "FALSE", "NOT GIVEN"]
+      }, {
+        question_id: "Q6", evidence: "climatic conditions, and game styles",
+        type: "tfng",
+        question_text: "The weather can affect how professional players adjust the strings on their rackets.",
+        correct_answer: "TRUE",
+        options: ["TRUE", "FALSE", "NOT GIVEN"]
+      }, {
+        question_id: "Q7", evidence: "much of the serving power of US professional player Pete Sampras was attributed to the addition of four to five lead weights",
+        type: "tfng",
+        question_text: "It was believed that the change Pete Sampras made to his rackets contributed to his strong serve.",
+        correct_answer: "TRUE",
+        options: ["TRUE", "FALSE", "NOT GIVEN"]
+      }]
+    }, {
+      group_id: "G2",
+      type_label: "Notes Completion",
+      instructions: "Complete the notes below.\nChoose ONE WORD ONLY from the passage for each answer.\n\nThe tennis racket and how it has changed",
+      questions: [{
+        question_id: "Q8", evidence: "experimented with different kinds of paint",
+        type: "notes_completion",
+        question_text: "Mike and Bob Bryan made changes to the types of _______ used on their racket frames.",
+        correct_answer: "paint",
+        word_limit: 1
+      }, {
+        question_id: "Q9", evidence: "generated so much topspin that it was quickly banned",
+        type: "notes_completion",
+        question_text: "Players were not allowed to use the spaghetti-strung racket because of the amount of _______ it created.",
+        correct_answer: "topspin",
+        word_limit: 1
+      }, {
+        question_id: "Q10", evidence: "equal in significance to nutrition or training",
+        type: "notes_completion",
+        question_text: "Changes to rackets can be regarded as being as important as players' diets or the _______ they do.",
+        correct_answer: "training",
+        word_limit: 1
+      }, {
+        question_id: "Q11", evidence: "natural gut made from the outer layer of sheep or cow intestines",
+        type: "notes_completion",
+        question_text: "All rackets used to have natural strings made from the _______ of animals.",
+        correct_answer: "intestines",
+        acceptable_answers: ["intestines", "gut"],
+        word_limit: 1
+      }, {
+        question_id: "Q12", evidence: "addition of four to five lead weights onto his rackets",
+        type: "notes_completion",
+        question_text: "Pete Sampras had metal _______ put into the frames of his rackets.",
+        correct_answer: "weights",
+        word_limit: 1
+      }, {
+        question_id: "Q13", evidence: "replaced the original grips of his rackets with something thinner",
+        type: "notes_completion",
+        question_text: "Gonçalo Oliveira changed the _______ on his racket handles.",
+        correct_answer: "grips",
+        word_limit: 1
+      }]
+    }]
+  }]
+};
+
+// ─────────────────────────────────────────────
+// SYSTEM PROMPT FOR CLAUDE
+// ─────────────────────────────────────────────
+var SYSTEM_PROMPT = "You are an IELTS Reading expert. Diagnose each question and return ONLY valid JSON, no markdown.\n\nFormat: {\"results\":[{\"question_id\":\"Q1\",\"is_correct\":true,\"error_type\":null,\"passage_location\":\"Paragraph 1\",\"answer_quote\":\"verbatim quote max 12 words\",\"explanation\":\"1 sentence max 25 words\",\"why_wrong\":null,\"try_again\":[\"hint1 max 15 words\",\"hint2 max 15 words\"],\"self_assessment\":[\"reason1\",\"reason2\",\"reason3\"]}]}\n\nRules:\n- is_correct: false if student_answer is null or empty\n- answer_quote: REQUIRED for every question including correct ones. Copy 6-12 words verbatim from the passage that prove the answer. Never null, never empty.\n- passage_location: REQUIRED. e.g. \"Paragraph 2\"\n- error_type: wrong_word/spelling_typo/wrong_plural/missing_answer (fill-in); chose_distractor/misunderstood_context (mcq/tfng); null if correct\n- explanation: cite passage evidence, max 25 words\n- why_wrong: wrong answers only, max 15 words; null if correct\n- try_again: 2 guiding hints, never reveal answer, max 15 words each\n- self_assessment: exactly 3 checkbox reasons, max 10 words each\n- One result per question_id, never skip any.";
+
+// ─────────────────────────────────────────────
+// BUILD USER MESSAGE
+// ─────────────────────────────────────────────
+function buildUserMessage(studentAnswers) {
+  var s1 = testData.sections.find(function(s){ return s.section_id === "S1"; });
+  var passageText = s1 ? s1.passage : "";
+  var allQs = getAllQuestions().filter(function(q){ return q.section_id === "S1"; });
+  var payload = allQs.map(function (q) {
+    return {
+      question_id: q.question_id,
+      type: q.type,
+      question_text: q.question_text,
+      correct_answer: q.correct_answer,
+      word_limit: q.word_limit || null,
+      student_answer: studentAnswers[q.question_id] || null
+    };
+  });
+  return JSON.stringify({ passage: passageText, questions: payload });
+}
+
+// ─────────────────────────────────────────────
+// STYLES
+// ─────────────────────────────────────────────
+var css = "\n  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500;600&display=swap');\n  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }\n  :root {\n    --navy: #0f172a; --navy-mid: #1e293b; --navy-light: #334155;\n    --slate: #64748b; --slate-light: #94a3b8; --border: #e2e8f0;\n    --bg: #f8fafc; --bg-card: #ffffff;\n    --indigo: #4f46e5; --indigo-light: #eef2ff; --indigo-dark: #3730a3;\n    --green: #16a34a; --green-light: #f0fdf4; --green-border: #bbf7d0;\n    --red: #dc2626; --red-light: #fef2f2; --red-border: #fecaca;\n    --amber: #d97706; --amber-light: #fffbeb;\n    --font-body: 'DM Sans', system-ui, sans-serif;\n    --font-serif: 'Lora', Georgia, serif;\n    --radius: 8px; --radius-lg: 12px;\n  }\n  body { font-family: var(--font-body); background: var(--bg); color: var(--navy); line-height: 1.6; overflow: hidden; }\n\n  /* \u2500\u2500 TOPBAR \u2500\u2500 */\n  .topbar {\n    background: white; border-bottom: 1px solid var(--border);\n    padding: 0 20px; height: 52px;\n    display: flex; align-items: center; justify-content: space-between;\n    position: relative; z-index: 200;\n  }\n  .topbar-left { display: flex; align-items: center; gap: 16px; }\n  .topbar-brand { font-family: var(--font-serif); font-size: 16px; color: var(--navy); font-weight: 500; }\n  .topbar-brand span { color: var(--indigo); }\n  .timer-box {\n    display: flex; align-items: center; gap: 6px;\n    background: var(--navy); color: white;\n    padding: 5px 12px; border-radius: var(--radius);\n    font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;\n    letter-spacing: 1px;\n  }\n  .timer-box.warning { background: #dc2626; }\n  .timer-icon { font-size: 14px; }\n  .api-key-wrap { display: flex; align-items: center; gap: 8px; }\n  .api-key-wrap label { font-size: 12px; color: var(--slate); white-space: nowrap; }\n  .api-key-wrap input {\n    background: var(--bg); border: 1px solid var(--border);\n    border-radius: var(--radius); color: var(--navy);\n    font-size: 12px; padding: 5px 10px; width: 210px; outline: none;\n  }\n  .api-key-wrap input:focus { border-color: var(--indigo); }\n\n  /* \u2500\u2500 PART HEADER BAR \u2500\u2500 */\n  .part-header-bar {\n    background: #f1f5f9; border-bottom: 1px solid var(--border);\n    padding: 8px 20px; display: flex; align-items: center; gap: 16px;\n  }\n  .part-tabs { display: flex; gap: 2px; }\n  .part-tab {\n    padding: 5px 14px; font-size: 13px; font-weight: 500;\n    border: 1px solid transparent; border-radius: var(--radius);\n    cursor: pointer; color: var(--slate); background: transparent;\n    transition: all 0.12s;\n  }\n  .part-tab.active {\n    background: white; border-color: var(--border);\n    color: var(--navy); font-weight: 600;\n    box-shadow: 0 1px 3px rgba(0,0,0,0.06);\n  }\n  .part-tab:hover:not(.active) { color: var(--navy); background: rgba(255,255,255,0.6); }\n  .part-header-desc { font-size: 13px; color: var(--slate); }\n\n  /* \u2500\u2500 SPLIT LAYOUT \u2500\u2500 */\n  .split-container {\n    display: flex; height: calc(100vh - 52px - 40px - 48px);\n    overflow: hidden; position: relative;\n  }\n  .passage-pane {\n    overflow-y: auto; padding: 28px 32px;\n    background: white; flex-shrink: 0;\n    min-width: 280px; max-width: 75%;\n  }\n  .passage-pane h2 {\n    font-family: var(--font-serif); font-size: 21px; font-weight: 500;\n    color: var(--navy); margin-bottom: 20px; line-height: 1.4;\n  }\n  .passage-text { font-size: 15px; line-height: 1.85; color: var(--navy-mid); font-family: var(--font-serif); }\n  .passage-text p { margin-bottom: 14px; }\n  .para-letter { font-weight: 700; font-family: var(--font-body); color: var(--navy); margin-right: 6px; font-size: 14px; }\n\n  /* \u2500\u2500 DIVIDER \u2500\u2500 */\n  .divider {\n    width: 5px; background: var(--border); cursor: col-resize;\n    display: flex; align-items: center; justify-content: center;\n    flex-shrink: 0; position: relative; transition: background 0.15s;\n  }\n  .divider:hover, .divider.dragging { background: var(--indigo); }\n  .divider-handle {\n    width: 28px; height: 28px; border-radius: 50%;\n    background: white; border: 1px solid var(--border);\n    display: flex; align-items: center; justify-content: center;\n    font-size: 12px; color: var(--slate); position: absolute;\n    box-shadow: 0 1px 4px rgba(0,0,0,0.1); z-index: 10; user-select: none;\n    pointer-events: none;\n  }\n  .divider:hover .divider-handle, .divider.dragging .divider-handle { border-color: var(--indigo); color: var(--indigo); }\n\n  /* \u2500\u2500 QUESTIONS PANE \u2500\u2500 */\n  .questions-pane {\n    flex: 1; overflow-y: auto; padding: 20px 20px 0;\n    min-width: 280px; background: var(--bg);\n  }\n  .group-header-bar {\n    background: white; border: 1px solid var(--border);\n    border-radius: var(--radius); padding: 12px 14px; margin-bottom: 14px;\n  }\n  .group-header-bar h3 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }\n  .group-header-bar p { font-size: 12px; color: var(--slate); white-space: pre-line; line-height: 1.5; }\n  .question-item { margin-bottom: 18px; }\n  .question-label { font-size: 13.5px; color: var(--navy-mid); margin-bottom: 8px; line-height: 1.55; }\n  .q-num { font-weight: 700; color: var(--navy); margin-right: 6px; font-size: 13px; }\n  .options-list { display: flex; flex-direction: column; gap: 5px; }\n  .option-btn {\n    display: flex; align-items: flex-start; gap: 10px;\n    padding: 8px 12px; border: 1px solid var(--border);\n    border-radius: var(--radius); background: white;\n    cursor: pointer; font-size: 13px; text-align: left;\n    transition: all 0.12s; color: var(--navy-mid); line-height: 1.4;\n  }\n  .option-btn:hover { border-color: #94a3b8; background: #f8fafc; }\n  .option-btn.selected { background: var(--indigo-light); border-color: var(--indigo); color: var(--indigo-dark); }\n  .option-radio {\n    width: 16px; height: 16px; border-radius: 50%;\n    border: 2px solid var(--border); flex-shrink: 0; margin-top: 1px;\n    transition: all 0.12s; background: white;\n  }\n  .option-btn.selected .option-radio { border-color: var(--indigo); background: var(--indigo); box-shadow: inset 0 0 0 3px white; }\n  .option-check {\n    width: 16px; height: 16px; border-radius: 3px;\n    border: 2px solid var(--border); flex-shrink: 0; margin-top: 1px;\n    transition: all 0.12s; background: white;\n  }\n  .option-btn.selected .option-check { border-color: var(--indigo); background: var(--indigo); }\n  .fill-input {\n    width: 100%; padding: 8px 12px; border: 1px solid var(--border);\n    border-radius: var(--radius); font-size: 13px;\n    font-family: var(--font-body); outline: none;\n    transition: border-color 0.15s; color: var(--navy); background: white;\n  }\n  .fill-input:focus { border-color: var(--indigo); box-shadow: 0 0 0 2px var(--indigo-light); }\n  .options-bank {\n    background: #f8fafc; border: 1px solid var(--border);\n    border-radius: var(--radius); padding: 10px 12px;\n    margin-bottom: 12px; font-size: 12px; color: var(--slate);\n    display: flex; flex-wrap: wrap; gap: 4px 12px;\n  }\n  .bank-item strong { color: var(--navy); }\n\n  /* \u2500\u2500 BOTTOM NAV \u2500\u2500 */\n  .bottom-nav {\n    height: 52px; background: white; border-top: 1px solid var(--border);\n    display: flex; align-items: center; padding: 0 16px;\n    gap: 0; position: relative;\n  }\n  .bottom-parts { display: flex; gap: 20px; align-items: center; flex: 1; }\n  .bottom-part-group { display: flex; align-items: center; gap: 6px; }\n  .bottom-part-label { font-size: 12px; font-weight: 600; color: var(--slate); white-space: nowrap; margin-right: 2px; }\n  .q-pill {\n    width: 28px; height: 28px; border-radius: 4px;\n    font-size: 12px; font-weight: 500; border: none;\n    cursor: pointer; display: flex; align-items: center; justify-content: center;\n    transition: all 0.12s; background: var(--bg); color: var(--slate);\n    font-family: var(--font-body);\n  }\n  .q-pill:hover { background: var(--border); color: var(--navy); }\n  .q-pill.answered { background: #dbeafe; color: #1e40af; }\n  .q-pill.active { background: var(--navy); color: white; font-weight: 700; }\n  .q-pill.active.answered { background: var(--indigo); }\n  .bottom-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }\n  .nav-btn {\n    width: 36px; height: 36px; border-radius: var(--radius);\n    background: var(--navy); color: white; border: none;\n    font-size: 16px; cursor: pointer; display: flex;\n    align-items: center; justify-content: center;\n    transition: background 0.12s; font-family: var(--font-body);\n  }\n  .nav-btn:hover { background: var(--navy-light); }\n  .nav-btn:disabled { background: var(--border); color: var(--slate-light); cursor: not-allowed; }\n  .btn-submit-final {\n    background: var(--indigo); color: white; border: none;\n    padding: 8px 18px; border-radius: var(--radius);\n    font-size: 13px; font-weight: 600; cursor: pointer;\n    font-family: var(--font-body); transition: background 0.12s;\n    white-space: nowrap;\n  }\n  .btn-submit-final:hover { background: var(--indigo-dark); }\n  .btn-submit-final:disabled { background: var(--slate-light); cursor: not-allowed; }\n  .nav-divider { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }\n\n  /* \u2500\u2500 LOADING \u2500\u2500 */\n  .loading-screen {\n    height: calc(100vh - 52px); display: flex; flex-direction: column;\n    align-items: center; justify-content: center; gap: 20px;\n  }\n  .loading-icon {\n    width: 52px; height: 52px; border: 3px solid var(--border);\n    border-top-color: var(--indigo); border-radius: 50%;\n    animation: spin 0.9s linear infinite;\n  }\n  @keyframes spin { to { transform: rotate(360deg); } }\n  .loading-screen h2 { font-family: var(--font-serif); font-size: 22px; font-weight: 400; color: var(--navy); }\n  .loading-screen p { font-size: 14px; color: var(--slate); }\n  .loading-dots span { animation: blink 1.4s infinite; }\n  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }\n  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }\n  @keyframes blink { 0%,80%,100%{opacity:0;} 40%{opacity:1;} }\n\n  /* \u2500\u2500 REPORT \u2500\u2500 */\n  \n  .report-header { margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }\n  .report-header h1 { font-family: var(--font-serif); font-size: 28px; font-weight: 500; color: var(--navy); margin-bottom: 4px; }\n  .report-header p { font-size: 14px; color: var(--slate); }\n  .score-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 40px; }\n  .score-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px 20px; }\n  .score-card .label { font-size: 11px; color: var(--slate); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }\n  .score-card .value { font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1; }\n  .score-card .sub { font-size: 12px; color: var(--slate-light); margin-top: 2px; }\n  .report-section { margin-bottom: 44px; }\n  .report-section h2 { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--indigo); }\n  .breakdown-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }\n  .breakdown-card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }\n  .breakdown-card .type-name { font-size: 13px; font-weight: 600; color: var(--navy-mid); margin-bottom: 6px; }\n  .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }\n  .progress-fill { height: 100%; border-radius: 3px; }\n  .breakdown-card .pct { font-size: 13px; color: var(--slate); }\n  .q-card { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 10px; border-left: 4px solid transparent; }\n  .q-card.correct { border-left-color: var(--green); }\n  .q-card.wrong { border-left-color: var(--red); }\n  .q-card-header { padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; background: white; user-select: none; }\n  .q-card.correct .q-card-header:hover { background: var(--green-light); }\n  .q-card.wrong .q-card-header:hover { background: var(--red-light); }\n  .q-badge { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }\n  .q-badge.correct { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }\n  .q-badge.wrong { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }\n  .q-card-question { font-size: 13px; color: var(--navy-mid); flex: 1; line-height: 1.5; }\n  .q-card-num { font-size: 12px; color: var(--slate); font-weight: 700; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }\n  .q-card-chevron { color: var(--slate-light); flex-shrink: 0; transition: transform 0.2s; margin-top: 2px; font-style: normal; }\n  .q-card.open .q-card-chevron { transform: rotate(180deg); }\n  .q-card-body { padding: 14px 16px; background: var(--bg); border-top: 1px solid var(--border); display: none; flex-direction: column; gap: 12px; }\n  .q-card.open .q-card-body { display: flex; }\n  .answer-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }\n  .answer-pill { font-size: 12px; padding: 3px 9px; border-radius: 4px; font-weight: 600; }\n  .answer-pill.student-correct { background: var(--green-light); color: var(--green); }\n  .answer-pill.student-wrong { background: var(--red-light); color: var(--red); }\n  .answer-pill.correct-ans { background: #ede9fe; color: #5b21b6; }\n  .answer-pill-label { font-size: 11px; color: var(--slate); margin-bottom: 3px; }\n  .error-tag { display: inline-flex; font-size: 11px; background: var(--amber-light); color: var(--amber); border: 1px solid #fde68a; padding: 2px 7px; border-radius: 4px; font-weight: 700; font-family: monospace; }\n  .detail-row { font-size: 13px; line-height: 1.6; color: var(--navy-mid); }\n  .detail-label { font-weight: 700; color: var(--navy); margin-right: 5px; }\n  .passage-quote { background: white; border-left: 3px solid var(--indigo); padding: 7px 12px; font-family: var(--font-serif); font-style: italic; font-size: 13px; color: var(--navy-mid); border-radius: 0 var(--radius) var(--radius) 0; }\n  .passage-location-tag { font-size: 11px; background: var(--indigo-light); color: var(--indigo); padding: 2px 7px; border-radius: 4px; font-weight: 700; display: inline-block; margin-bottom: 5px; }\n  .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }\n  .vocab-card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }\n  .vocab-word { font-size: 15px; font-weight: 700; color: var(--navy); }\n  .vocab-ipa { font-family: monospace; font-size: 12px; color: var(--slate); margin-bottom: 5px; }\n  .vocab-def { font-size: 13px; color: var(--navy-mid); margin-bottom: 5px; line-height: 1.5; }\n  .vocab-ex { font-size: 12px; color: var(--slate); font-style: italic; line-height: 1.5; }\n  .vocab-ex::before { content: '\"'; } .vocab-ex::after { content: '\"'; }\n  .error-state { text-align: center; padding: 40px; background: var(--red-light); border: 1px solid var(--red-border); border-radius: var(--radius-lg); margin: 40px auto; max-width: 500px; }\n  .error-state h3 { color: var(--red); margin-bottom: 8px; }\n  .error-state p { font-size: 14px; color: var(--slate); margin-bottom: 16px; }\n  .btn-retry { background: var(--red); color: white; border: none; padding: 10px 24px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font-body); }\n  .section-chip { display: inline-block; background: var(--navy); color: white; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }\n  .btn-submit-report { background: var(--indigo); color: white; border: none; padding: 10px 28px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: var(--font-body); }\n  .btn-submit-report:hover { background: var(--indigo-dark); }\n\n  /* \u2500\u2500 PARAGRAPH MATCHING GRID \u2500\u2500 */\n  .para-match-table {\n    width: 100%; border-collapse: collapse;\n    border: 1px solid var(--border); border-radius: var(--radius);\n    overflow: hidden; background: white; font-size: 13.5px;\n  }\n  .para-match-table thead tr { background: #f1f5f9; }\n  .para-match-table thead th {\n    padding: 10px 6px; text-align: center; font-weight: 700;\n    font-size: 13px; color: var(--navy); border-left: 1px solid var(--border);\n    width: 38px;\n  }\n  .para-match-table thead th:first-child { text-align: left; border-left: none; width: auto; padding-left: 12px; }\n  .para-match-table tbody tr { border-top: 1px solid var(--border); }\n  .para-match-table tbody tr:hover { background: #f8fafc; }\n  .para-match-table td {\n    padding: 12px 6px; text-align: center; vertical-align: middle;\n    border-left: 1px solid var(--border);\n  }\n  .para-match-table td:first-child {\n    text-align: left; border-left: none; padding: 12px 12px;\n    line-height: 1.5; color: var(--navy-mid);\n  }\n  .para-match-q-num {\n    display: inline-flex; align-items: center; justify-content: center;\n    width: 26px; height: 26px; border: 1.5px solid var(--navy);\n    border-radius: 3px; font-weight: 700; font-size: 12px;\n    color: var(--navy); margin-right: 10px; flex-shrink: 0;\n    vertical-align: middle;\n  }\n  .grid-radio {\n    width: 20px; height: 20px; border-radius: 50%;\n    border: 2px solid #cbd5e1; background: white; cursor: pointer;\n    display: inline-flex; align-items: center; justify-content: center;\n    transition: all 0.12s; flex-shrink: 0;\n  }\n  .grid-radio:hover { border-color: var(--indigo); }\n  .grid-radio.selected { border-color: var(--indigo); background: var(--indigo); box-shadow: inset 0 0 0 4px white; }\n\n  /* \u2500\u2500 DRAG & DROP SUMMARY \u2500\u2500 */\n  .dnd-container { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }\n  .dnd-chip-bank {\n    padding: 14px 16px; background: #f8fafc;\n    border-bottom: 1px solid var(--border);\n    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;\n    min-height: 60px;\n  }\n  .dnd-chip-bank-label { font-size: 11px; font-weight: 700; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; width: 100%; margin-bottom: 2px; }\n  .dnd-chip {\n    display: inline-flex; align-items: center; gap: 5px;\n    padding: 5px 10px; border-radius: 6px;\n    border: 1.5px solid var(--border); background: white;\n    font-size: 12.5px; font-weight: 500; color: var(--navy);\n    cursor: grab; user-select: none;\n    transition: all 0.12s; white-space: nowrap;\n    box-shadow: 0 1px 3px rgba(0,0,0,0.06);\n  }\n  .dnd-chip:active { cursor: grabbing; }\n  .dnd-chip:hover:not(.used) { border-color: var(--indigo); color: var(--indigo); transform: translateY(-1px); box-shadow: 0 3px 8px rgba(79,70,229,0.15); }\n  .dnd-chip.dragging { opacity: 0.35; }\n  .dnd-chip.used { opacity: 0.3; cursor: default; }\n  .dnd-chip-letter { font-weight: 800; font-size: 11px; color: var(--indigo); background: var(--indigo-light); padding: 1px 5px; border-radius: 3px; }\n  .dnd-passage {\n    padding: 18px 20px; font-size: 14.5px; line-height: 2.4;\n    color: var(--navy-mid); font-family: var(--font-serif);\n  }\n  .dnd-blank {\n    display: inline-flex; align-items: center; justify-content: center;\n    min-width: 140px; height: 34px;\n    border: 2px dashed #cbd5e1; border-radius: 6px;\n    background: #f8fafc; vertical-align: middle;\n    margin: 0 4px; cursor: pointer; transition: all 0.15s;\n    position: relative; font-family: var(--font-body);\n  }\n  .dnd-blank.drag-over { border-color: var(--indigo); background: var(--indigo-light); box-shadow: 0 0 0 3px rgba(79,70,229,0.15); }\n  .dnd-blank.filled { border-style: solid; border-color: var(--indigo); background: var(--indigo-light); padding: 0 8px; gap: 6px; }\n  .dnd-blank-num {\n    position: absolute; top: -10px; left: 6px;\n    font-size: 10px; font-weight: 800; color: var(--indigo);\n    background: white; padding: 0 4px; border-radius: 3px;\n    border: 1px solid var(--indigo-light);\n    font-family: var(--font-body); line-height: 1.7;\n  }\n  .dnd-filled-chip {\n    display: inline-flex; align-items: center; gap: 4px;\n    font-size: 12px; font-weight: 600; color: var(--indigo-dark);\n    font-family: var(--font-body);\n  }\n  .dnd-filled-chip .dnd-chip-letter { background: var(--indigo); color: white; }\n  .dnd-remove-btn {\n    font-size: 14px; color: #94a3b8; cursor: pointer; line-height: 1;\n    padding: 0 2px; border-radius: 3px; font-family: sans-serif;\n    display: inline-flex; align-items: center;\n  }\n  .dnd-remove-btn:hover { color: var(--red); }\n  .dnd-empty-label { font-size: 11px; color: #94a3b8; }\n";
+
+// ─────────────────────────────────────────────
+// TIMER HOOK  (60 min = 3600s)
+// ─────────────────────────────────────────────
+function useTimer() {
+  var initialSeconds = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 3600;
+  var _useState = useState(initialSeconds),
+    _useState2 = _slicedToArray(_useState, 2),
+    seconds = _useState2[0],
+    setSeconds = _useState2[1];
+  var _useState3 = useState(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    running = _useState4[0],
+    setRunning = _useState4[1];
+  useEffect(function () {
+    if (!running) return;
+    var id = setInterval(function () {
+      return setSeconds(function (s) {
+        return Math.max(0, s - 1);
+      });
+    }, 1000);
+    return function () {
+      return clearInterval(id);
+    };
+  }, [running]);
+  var fmt = function fmt(s) {
+    var m = Math.floor(s / 60).toString().padStart(2, "0");
+    var sc = (s % 60).toString().padStart(2, "0");
+    return "".concat(m, ":").concat(sc);
+  };
+  return {
+    display: fmt(seconds),
+    seconds: seconds,
+    pause: function pause() {
+      return setRunning(false);
+    }
+  };
+}
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function getAllQuestions() {
+  var qs = [];
+  testData.sections.forEach(function(section) {
+    section.question_groups.forEach(function(group) {
+      group.questions.forEach(function(q) {
+        qs.push(Object.assign({}, q, { section_id: section.section_id, group_id: group.group_id, options_bank: group.options_bank }));
+      });
+    });
+  });
+  return qs;
+}
+
+function normalise(str) {
+  return (str || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function checkAnswer(q, studentAnswer) {
+  if (q.type === "mcq_two") {
+    var correct = (q.correct_answer || []).slice().sort().join(",");
+    var student = (studentAnswer || []).slice().sort().join(",");
+    return correct === student;
+  }
+  if (q.type === "fill_in_blank" || q.type === "notes_completion" || q.type === "summary_completion") {
+    var n = normalise(studentAnswer);
+    if (q.acceptable_answers) return q.acceptable_answers.some(function(a) { return normalise(a) === n; });
+    return normalise(q.correct_answer) === n;
+  }
+  return normalise(q.correct_answer) === normalise(studentAnswer);
+}
+
+function countWords(str) {
+  return (str || "").trim().split(/\s+/).filter(Boolean).length;
+}
+
+// ─────────────────────────────────────────────
+// FLAT QUESTION LIST FOR BOTTOM NAV
+// ─────────────────────────────────────────────
+function buildNavMap() {
+  // Returns: [ { qId, sectionIdx, groupIdx, label } ]
+  var nav = [];
+  testData.sections.forEach(function (sec, si) {
+    sec.question_groups.forEach(function (grp, gi) {
+      grp.questions.forEach(function (q) {
+        var raw = q.question_id.replace("Q", "");
+        nav.push({
+          qId: q.question_id,
+          sectionIdx: si,
+          groupIdx: gi,
+          label: raw
+        });
+      });
+    });
+  });
+  return nav;
+}
+var NAV_MAP = buildNavMap();
+
+// ─────────────────────────────────────────────
+// PASSAGE PANEL
+// ─────────────────────────────────────────────
+function PassagePane(_ref) {
+  var section = _ref.section,
+    width = _ref.width;
+  var renderPassage = function renderPassage() {
+    var paras = section.passage.split(/\n\n+/).filter(Boolean);
+    return paras.map(function (para, i) {
+      var m = para.match(/^([A-G])\s{1,3}([^]+)/);
+      if (m) return /*#__PURE__*/React.createElement("p", {
+        key: i
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "para-letter"
+      }, m[1]), m[2]);
+      return /*#__PURE__*/React.createElement("p", {
+        key: i
+      }, para);
+    });
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "passage-pane",
+    style: {
+      width: width
+    }
+  }, /*#__PURE__*/React.createElement("h2", null, section.passage_title), /*#__PURE__*/React.createElement("div", {
+    className: "passage-text"
+  }, renderPassage()));
+}
+
+// ─────────────────────────────────────────────
+// RESIZABLE DIVIDER
+// ─────────────────────────────────────────────
+function Divider(_ref2) {
+  var onDrag = _ref2.onDrag;
+  var _useState5 = useState(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    dragging = _useState6[0],
+    setDragging = _useState6[1];
+  var onMouseDown = function onMouseDown(e) {
+    e.preventDefault();
+    setDragging(true);
+    var move = function move(ev) {
+      return onDrag(ev.clientX);
+    };
+    var _up = function up() {
+      setDragging(false);
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", _up);
+    };
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", _up);
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "divider".concat(dragging ? " dragging" : ""),
+    onMouseDown: onMouseDown
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "divider-handle"
+  }, "\u21D4"));
+}
+
+// ─────────────────────────────────────────────
+// DRAG & DROP SUMMARY COMPLETION (Q31-36)
+// ─────────────────────────────────────────────
+function DndSummaryGroup(_ref3) {
+  var group = _ref3.group,
+    answers = _ref3.answers,
+    onChange = _ref3.onChange;
+  var bank = group.options_bank;
+  var _useState7 = useState(null),
+    _useState8 = _slicedToArray(_useState7, 2),
+    dragOver = _useState8[0],
+    setDragOver = _useState8[1]; // qId currently hovered
+  var _useState9 = useState(null),
+    _useState0 = _slicedToArray(_useState9, 2),
+    draggingLetter = _useState0[0],
+    setDraggingLetter = _useState0[1];
+
+  // Which letters are currently placed in blanks
+  var usedLetters = new Set(group.questions.map(function (q) {
+    return answers[q.question_id];
+  }).filter(Boolean));
+  var handleChipDragStart = function handleChipDragStart(e, letter) {
+    e.dataTransfer.setData("letter", letter);
+    e.dataTransfer.effectAllowed = "move";
+    setDraggingLetter(letter);
+  };
+  var handleChipDragEnd = function handleChipDragEnd() {
+    return setDraggingLetter(null);
+  };
+  var handleBlankDragOver = function handleBlankDragOver(e, qId) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOver(qId);
+  };
+  var handleBlankDragLeave = function handleBlankDragLeave() {
+    return setDragOver(null);
+  };
+  var handleBlankDrop = function handleBlankDrop(e, qId) {
+    e.preventDefault();
+    var letter = e.dataTransfer.getData("letter");
+    if (!letter) return;
+    // If this letter is already in another blank, clear it first
+    group.questions.forEach(function (q) {
+      if (answers[q.question_id] === letter && q.question_id !== qId) onChange(q.question_id, null);
+    });
+    onChange(qId, letter);
+    setDragOver(null);
+    setDraggingLetter(null);
+  };
+
+  // Also allow dragging a filled chip back to bank (drag from blank)
+  var handleFilledDragStart = function handleFilledDragStart(e, letter, qId) {
+    e.dataTransfer.setData("letter", letter);
+    e.dataTransfer.setData("fromQId", qId);
+    e.dataTransfer.effectAllowed = "move";
+    setDraggingLetter(letter);
+  };
+
+  // Render the passage with inline blanks
+  // Each question_text has _______ (N) as the blank placeholder
+  var renderPassage = function renderPassage() {
+    // Build one continuous passage-like block by chaining the sentences
+    return group.questions.map(function (q, i) {
+      var qId = q.question_id;
+      var num = qId.replace("Q", "");
+      var answer = answers[qId];
+      var bankItem = bank.find(function (b) {
+        return b.letter === answer;
+      });
+      var isDragOverThis = dragOver === qId;
+
+      // Split question text at the blank marker
+      var parts = q.question_text.split(/_______ \(\d+\)/);
+      var before = parts[0] || "";
+      var after = parts[1] || "";
+      return /*#__PURE__*/React.createElement("div", {
+        key: qId,
+        style: {
+          marginBottom: 20,
+          lineHeight: 2.2
+        }
+      }, /*#__PURE__*/React.createElement("span", null, before), /*#__PURE__*/React.createElement("span", {
+        className: "dnd-blank".concat(answer ? " filled" : "").concat(isDragOverThis ? " drag-over" : ""),
+        onDragOver: function onDragOver(e) {
+          return handleBlankDragOver(e, qId);
+        },
+        onDragLeave: handleBlankDragLeave,
+        onDrop: function onDrop(e) {
+          return handleBlankDrop(e, qId);
+        },
+        onClick: answer ? function () {
+          return onChange(qId, null);
+        } : undefined,
+        title: answer ? "Click to clear" : "Drop a phrase here"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "dnd-blank-num"
+      }, num), answer ? /*#__PURE__*/React.createElement("span", {
+        className: "dnd-filled-chip",
+        draggable: true,
+        onDragStart: function onDragStart(e) {
+          return handleFilledDragStart(e, answer, qId);
+        },
+        onDragEnd: handleChipDragEnd,
+        style: {
+          cursor: "grab"
+        }
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "dnd-chip-letter"
+      }, answer), bankItem === null || bankItem === void 0 ? void 0 : bankItem.text, /*#__PURE__*/React.createElement("span", {
+        className: "dnd-remove-btn",
+        onClick: function onClick(e) {
+          e.stopPropagation();
+          onChange(qId, null);
+        }
+      }, "\xD7")) : /*#__PURE__*/React.createElement("span", {
+        className: "dnd-empty-label"
+      }, "drop here")), /*#__PURE__*/React.createElement("span", null, after));
+    });
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "dnd-container"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "dnd-chip-bank"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "dnd-chip-bank-label"
+  }, "Drag a phrase into the correct blank"), bank.map(function (o) {
+    var isUsed = usedLetters.has(o.letter);
+    var isDraggingThis = draggingLetter === o.letter;
+    return /*#__PURE__*/React.createElement("div", {
+      key: o.letter,
+      className: "dnd-chip".concat(isUsed ? " used" : "").concat(isDraggingThis ? " dragging" : ""),
+      draggable: !isUsed,
+      onDragStart: function onDragStart(e) {
+        return !isUsed && handleChipDragStart(e, o.letter);
+      },
+      onDragEnd: handleChipDragEnd,
+      title: isUsed ? "Already placed" : "Drag to a blank"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "dnd-chip-letter"
+    }, o.letter), o.text);
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "dnd-passage"
+  }, renderPassage()));
+}
+
+// ─────────────────────────────────────────────
+// QUESTION GROUP RENDERER
+// ─────────────────────────────────────────────
+function QuestionGroup(_ref4) {
+  var _group$questions$;
+  var group = _ref4.group,
+    answers = _ref4.answers,
+    _onChange = _ref4.onChange;
+  var bank = group.options_bank;
+
+  // Detect paragraph matching: mcq_one with single-letter options (A–G) and no options_full
+  var isParagraphMatch = group.type_label === "Paragraph Matching" || group.questions.length > 0 && group.questions[0].type === "mcq_one" && !group.questions[0].options_full && !bank && group.questions[0].options && group.questions[0].options.every(function (o) {
+    return /^[A-J]$/.test(o);
+  });
+
+  // Detect drag-and-drop banked completion (G8: options_bank present + mcq_one)
+  var isDnD = !!bank && (group.questions[0] !== undefined);
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "group-header-bar"
+  }, /*#__PURE__*/React.createElement("h3", null, group.type_label), /*#__PURE__*/React.createElement("p", null, group.instructions.replace(/\nOptions:[^]*/, ""))), isDnD && /*#__PURE__*/React.createElement(DndSummaryGroup, {
+    group: group,
+    answers: answers,
+    onChange: _onChange
+  }), isParagraphMatch && function () {
+    var colLetters = group.questions[0].options;
+    return /*#__PURE__*/React.createElement("table", {
+      className: "para-match-table"
+    }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null), colLetters.map(function (l) {
+      return /*#__PURE__*/React.createElement("th", {
+        key: l
+      }, l);
+    }))), /*#__PURE__*/React.createElement("tbody", null, group.questions.map(function (q) {
+      var rawNum = q.question_id.replace("Q", "");
+      var answer = answers[q.question_id];
+      return /*#__PURE__*/React.createElement("tr", {
+        key: q.question_id
+      }, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+        className: "para-match-q-num"
+      }, rawNum), q.question_text), colLetters.map(function (l) {
+        return /*#__PURE__*/React.createElement("td", {
+          key: l
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "grid-radio".concat(answer === l ? " selected" : ""),
+          onClick: function onClick() {
+            return _onChange(q.question_id, answer === l ? null : l);
+          },
+          role: "radio",
+          "aria-checked": answer === l
+        }));
+      }));
+    })));
+  }(), !isParagraphMatch && !isDnD && group.questions.map(function (q) {
+    var rawNum = q.question_id.replace("Q", "");
+    var label = rawNum.includes("_") ? rawNum.replace("_", " & ") : rawNum;
+    var answer = answers[q.question_id];
+    if (q.type === "fill_in_blank" || q.type === "notes_completion" || q.type === "summary_completion") return /*#__PURE__*/React.createElement("div", {
+      key: q.question_id,
+      className: "question-item"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "question-label"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "q-num"
+    }, label), q.question_text), /*#__PURE__*/React.createElement("input", {
+      className: "fill-input",
+      type: "text",
+      placeholder: "One word only\u2026",
+      value: answer || "",
+      onChange: function onChange(e) {
+        return _onChange(q.question_id, e.target.value);
+      }
+    }));
+    if (q.type === "mcq_two") {
+      var sel = answer || [];
+      return /*#__PURE__*/React.createElement("div", {
+        key: q.question_id,
+        className: "question-item"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "question-label"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "q-num"
+      }, label), q.question_text, " ", /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontSize: 11,
+          color: "var(--slate)"
+        }
+      }, "(choose TWO)")), /*#__PURE__*/React.createElement("div", {
+        className: "options-list"
+      }, q.options.map(function (opt) {
+        var lt = opt.letter || opt;
+        var tx = opt.text || opt;
+        var isSel = sel.includes(lt);
+        return /*#__PURE__*/React.createElement("button", {
+          key: lt,
+          className: "option-btn".concat(isSel ? " selected" : ""),
+          onClick: function onClick() {
+            return isSel ? _onChange(q.question_id, sel.filter(function (x) {
+              return x !== lt;
+            })) : sel.length < 2 && _onChange(q.question_id, [].concat(_toConsumableArray(sel), [lt]));
+          }
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "option-check"
+        }), lt, ". ", tx);
+      })));
+    }
+
+    // mcq_one standard (paragraph matching handled above, banked handled above)
+    var opts = q.options_full || (q.options || []).map(function (o) {
+      return {
+        letter: o,
+        text: o
+      };
+    });
+    return /*#__PURE__*/React.createElement("div", {
+      key: q.question_id,
+      className: "question-item"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "question-label"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "q-num"
+    }, label), q.question_text), /*#__PURE__*/React.createElement("div", {
+      className: "options-list"
+    }, opts.map(function (opt) {
+      var lt = opt.letter || opt;
+      var tx = opt.text || opt;
+      return /*#__PURE__*/React.createElement("button", {
+        key: lt,
+        className: "option-btn".concat(answer === lt ? " selected" : ""),
+        onClick: function onClick() {
+          return _onChange(q.question_id, answer === lt ? null : lt);
+        }
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "option-radio"
+      }), q.options_full ? "".concat(lt, ". ").concat(tx) : tx);
+    })));
+  }));
+}
+// ─────────────────────────────────────────────
+// REPORT Q-CARD
+// ─────────────────────────────────────────────
+
+// ─────────────────────────────────────────────
+// PASSAGE DIAGNOSIS , side-by-side for S1
+// ─────────────────────────────────────────────
+function HighlightedPassage(_ref_hp) {
+  var passage = _ref_hp.passage, activeQuote = _ref_hp.activeQuote;
+  var paras = passage.split(/\n\n+/).filter(Boolean);
+
+  function renderPara(p, i) {
+    var m = p.match(/^([A-G])\s{1,3}(.+)/s);
+    var text = m ? m[2] : p;
+    var letter = m ? m[1] : null;
+
+    if (activeQuote) {
+      // Case-insensitive, trim-tolerant search
+      var needle = activeQuote.trim().replace(/\s+/g, " ");
+      var haystack = text.replace(/\s+/g, " ");
+      var idx = haystack.toLowerCase().indexOf(needle.toLowerCase());
+      if (idx !== -1) {
+        var actualMatch = haystack.slice(idx, idx + needle.length);
+        return React.createElement("p", { key: i },
+          letter && React.createElement("span", { className: "para-letter" }, letter),
+          haystack.slice(0, idx),
+          React.createElement("mark", { className: "passage-highlight" }, actualMatch),
+          haystack.slice(idx + needle.length)
+        );
+      }
+    }
+    return React.createElement("p", { key: i },
+      letter && React.createElement("span", { className: "para-letter" }, letter), text);
+  }
+
+  return React.createElement("div", { className: "passage-text rpt-passage" },
+    paras.map(renderPara)
+  );
+}
+
+
+// ─────────────────────────────────────────────
+// HARDCODED FEEDBACK (from teacher document)
+// ─────────────────────────────────────────────
+var FEEDBACK_DATA = {
+  Q1: { try_again: ["How was Murray viewed five years before 2016?","Did people believe he would become number one?","Which words in the passage describe public opinion about him?"], explanation: "The passage says Murray 'had been regarded as a talented outsider who entered but never won the major tournaments' , describing doubt, not expectation. The time reference matches but the meaning is opposite.", evidence_table: [["People expected Murray to become world number one","\"had been regarded as a talented outsider who entered but never won the major tournaments\"","The passage describes doubt, not expectation , the opposite of what the question claims"],["This expectation existed for at least five years","\"Yet five years previously, he had been regarded as a talented outsider\"","The time reference matches, but the meaning is opposite , the question reuses this detail to mislead you"]], common_mistake: "You may have noticed 'five years' in both the question and passage and felt the answer was TRUE. IELTS often repeats dates, names, or numbers while changing the meaning around them.", paraphrases: [["regarded as","expected","opposite meaning"],["talented outsider","future champion","opposite idea"],["never won","become top player","contradiction"]], self_assessment: ["I matched keywords without checking meaning","I saw 'five years' and assumed the answer was TRUE","I confused FALSE with NOT GIVEN","I did not fully understand 'outsider'","I located the correct paragraph but misunderstood it"], tip: "Do NOT decide based on matching keywords. Ask: 'Does the passage support, contradict, or ignore the statement?'" },
+  Q2: { try_again: ["Paragraph 2 describes two separate changes Murray made. Which one relates to his racket strings?","Find the word the writer uses to describe how noticeable the racket change was. What does it tell you?"], explanation: "The passage says the racket change was 'so subtle as to pass more or less unnoticed' , the direct opposite of attracting attention.", evidence_table: [["The racket change 'attracted a lot of attention'","\"Another change was so subtle as to pass more or less unnoticed\"","Subtle and unnoticed are the direct opposites of attracting attention"],["The change was widely noticed","\"pass more or less unnoticed\"","'More or less' confirms it was largely ignored, not celebrated"]], common_mistake: "You may have connected 'widely publicised' to the racket change because both ideas appear close together. But it describes the coaching change. Always ask: 'Does this evidence refer to the correct subject?'", paraphrases: [["subtle","difficult to notice","synonym"],["unnoticed","did not attract attention","synonym"],["widely publicised","attracted a lot of attention","same meaning , but describes the wrong change"]], self_assessment: ["I confused the coaching change with the racket change","I matched the topic but not the exact detail","I did not know what 'subtle' or 'unnoticed' meant","I read too quickly and did not check which change was being described"], tip: "Always confirm: 'Does this evidence refer to the correct subject?' Students often find the correct paragraph but connect the wrong detail." },
+  Q3: { try_again: ["Find the sentence in Paragraph 3 that mentions touring professionals and rackets.","Does the passage say anything about whether players physically bring a stringer with them on tour?","Are you adding information from your own knowledge?"], explanation: "The passage says rackets are 'customised to their specific needs' but says nothing about whether a stringer physically travels with players.", evidence_table: [["Most top players take a stringer on tour","\"Touring professionals have their rackets customised to their specific needs\"","The passage only tells us rackets are customised , nothing about where or how"],["This is standard practice","No further information about where customisation happens","The passage is completely silent on this point"]], common_mistake: "You may have logically assumed customised rackets require a stringer to travel with the player. IELTS tests only what is explicitly stated , not what is probably true in real life.", paraphrases: [["customised","specially adjusted","paraphrase"],["touring professionals","top players on tour","paraphrase"],["specific needs","individual requirements","paraphrase"]], self_assessment: ["I assumed 'customised to their needs' implied a stringer travelling with the player","I confused NOT GIVEN with TRUE","I did not look carefully at what the passage was silent about","I read too quickly and thought the passage confirmed the statement"], tip: "NOT GIVEN means the passage does not clearly confirm or contradict the statement. If you are adding information the passage never mentions, the answer is NOT GIVEN." },
+  Q4: { try_again: ["Find the sentence in Paragraph 3 that describes the weight of the Bryan brothers' rackets.","Does the passage say their rackets are lighter or heavier than average?"], explanation: "The passage says 'The rackets they use now weigh more than the average model' , the direct opposite of 'light in comparison to the majority.'", evidence_table: [["Their rackets are light in comparison to others","\"The rackets they use now weigh more than the average model\"","The passage says heavier , the direct opposite of the question"],["Their rackets are below average weight","\"weigh more than the average model\"","'More than average' directly contradicts 'light in comparison to the majority'"]], common_mistake: "IELTS often reverses comparative words like more/less, heavier/lighter. Always ask: 'Is the comparison going in the same direction as in the passage?'", paraphrases: [["weigh more than the average model","light in comparison to the majority","opposite meaning , this is the trap"],["denser string pattern","more crosses and mains","paraphrase"],["the average model","the majority of rackets","paraphrase"]], self_assessment: ["I misread 'weigh more' as 'weigh less'","I did not check the direction of the comparison carefully","I confused NOT GIVEN with FALSE","I found the right sentence but interpreted it incorrectly"], tip: "Watch out for comparative words: more / less / heavier / lighter. The question often reverses the direction of the comparison to create a FALSE answer." },
+  Q5: { try_again: ["Find the sentence in Paragraph 5 about Werner Fischer and the spaghetti-strung racket.","Does the passage say anything about who designed or invented this racket?"], explanation: "The passage says Fischer 'started playing with' the racket , nothing about who designed it. The passage is completely silent on design.", evidence_table: [["Werner Fischer designed the racket himself","\"the amateur German tennis player Werner Fischer started playing with the so-called spaghetti-strung racket\"","The passage only tells us Fischer played with it , not who designed it"],["He was the creator of the design","No information about the racket's creator anywhere","The passage is silent on this point"]], common_mistake: "A natural assumption is that because Fischer 'played with' the racket, he must have designed it. But IELTS requires evidence from the text. 'So-called' simply means the racket is known by that name.", paraphrases: [["started playing with","played with","paraphrase"],["the so-called spaghetti-strung racket","a spaghetti-strung racket","paraphrase"],["designed himself","(not mentioned)","NOT GIVEN , passage is silent"]], self_assessment: ["I assumed that because Fischer played with it, he must have designed it","I confused NOT GIVEN with TRUE","I read too quickly and did not notice the passage is silent on who designed it","I did not understand what 'so-called' implies"], tip: "Playing with something is not the same as designing it. If the passage does not mention a detail, the answer is NOT GIVEN , even if it seems logical." },
+  Q6: { try_again: ["Find the sentence in Paragraph 6 that lists the factors affecting how players change their strings.","Is weather or climate mentioned as one of these factors?"], explanation: "The passage lists 'climatic conditions' among the factors , 'climatic conditions' means weather, directly confirming the statement.", evidence_table: [["Weather can affect how players adjust their strings","\"They will continually change it depending on various factors including the court surface, climatic conditions, and game styles\"","'Climatic conditions' means weather , directly confirms the statement"],["This applies to professional players","\"nearly all professional players experiment with\" string choice","Confirms this applies to virtually all professionals"]], common_mistake: "The question uses 'weather' while the passage uses 'climatic conditions.' Some students choose NOT GIVEN because they do not recognise these as the same thing. This is a classic IELTS paraphrase.", paraphrases: [["climatic conditions","weather","paraphrase , same meaning"],["continually change","adjust","paraphrase"],["nearly all professional players","professional players","paraphrase"]], self_assessment: ["I did not recognise 'climatic conditions' as meaning 'weather'","I found the paragraph but skimmed past the list of factors","I chose NOT GIVEN because the exact word 'weather' was not used","I was not sure whether 'climatic' and 'weather' meant the same thing"], tip: "Paraphrases are the key skill in TRUE/FALSE/NOT GIVEN. 'Weather' and 'climatic conditions' mean the same thing , do not be misled by different wording." },
+  Q7: { try_again: ["Find the sentence in Paragraph 9 about Pete Sampras and his rackets.","What does 'was attributed to' mean? Does it suggest people believed this, or that it was scientifically proven?"], explanation: "'Was attributed to' means it was believed or credited to , confirming that people believed the lead weights contributed to his serving power.", evidence_table: [["People believed the change contributed to his strong serve","\"much of the serving power of Pete Sampras was attributed to the addition of four to five lead weights\"","'Was attributed to' = believed or credited to , directly confirms the statement"],["It was specifically about his serve","\"the serving power of Pete Sampras\"","'Serving power' directly matches 'strong serve'"]], common_mistake: "Some students are unsure whether 'was attributed to' is strong enough for TRUE. It is , it means believed or credited to, exactly matching 'it was believed that' in the question.", paraphrases: [["was attributed to","it was believed that \u2026 contributed to","paraphrase , same meaning"],["serving power","strong serve","paraphrase"],["the addition of lead weights","the change Pete Sampras made","paraphrase"]], self_assessment: ["I did not know what 'attributed to' meant","I thought 'attributed to' was too uncertain to count as TRUE","I found the right sentence but was not sure it matched","I did not recognise 'serving power' as a paraphrase of 'strong serve'"], tip: "'Attributed to' = 'it was believed that \u2026 was caused by.' This phrase alone is sufficient evidence for TRUE." },
+  Q8: { try_again: ["Scan Paragraph 3 for the sentence describing what Mike and Bob Bryan experimented with on their frames.","The sentence mentions two things they changed. Which one is something applied to the frame itself?"], explanation: "The passage says they 'experimented with different kinds of paint' , paint is the one-word answer that fills the blank.", evidence_table: [["Changes to the types of ______ used on their frames","\"they have adjusted not only racket length, but even experimented with different kinds of paint\"","'Different kinds of paint' on their frames , paint fills the blank"],["The change was to the frame","\"our frames go through a thorough customisation process\"","The passage confirms the focus is on the frame, and paint is what they changed"]], common_mistake: "'Paint' surprises many students. But in notes completion you must use the exact word from the passage. 'Length' appears in the same sentence but does not fit , length is a dimension, not a type of material.", paraphrases: [["different kinds of paint","types of ______","the blank = kinds of paint"],["experimented with","made changes to","paraphrase"],["frames","racket frames","same word"]], self_assessment: ["I found the paragraph but did not read the full sentence carefully","I chose 'length' because it also appears in the same sentence","I did not notice the question asks about the frame specifically","I did not think paint could be something players change"], tip: "Use the words around the blank to narrow down which part of the passage to look in. The answer must be ONE word copied exactly." },
+  Q9: { try_again: ["Scan Paragraph 5 for the sentence explaining why the spaghetti-strung racket was banned.","What specific thing did it produce too much of?"], explanation: "The passage says it 'generated so much topspin that it was quickly banned' , topspin is the one-word answer.", evidence_table: [["Banned because of the amount of ______ it created","\"It created a string bed that generated so much topspin that it was quickly banned\"","'So much topspin' is the reason for the ban"],["'Not allowed to use' matches the passage","\"quickly banned by the International Tennis Federation\"","Banned = not allowed to use"]], common_mistake: "The most common mistake is writing 'spin' instead of 'topspin.' In notes completion, you must use the exact word , a shorter version will be marked wrong.", paraphrases: [["banned","not allowed to use","paraphrase"],["generated","created","paraphrase"],["the International Tennis Federation","implied by 'players were not allowed'","the authority behind the ban"]], self_assessment: ["I wrote 'spin' instead of the exact word 'topspin'","I found the wrong paragraph","I did not know what topspin means","I scanned too quickly and missed the key word"], tip: "Use the EXACT word from the passage , not a synonym, not a shorter form. 'Spin' is not the same as 'topspin' in notes completion." },
+  Q10: { try_again: ["Find the sentence in Paragraph 5 that compares racket modification to other aspects of a player's preparation.","What two things are racket changes compared to in terms of importance?"], explanation: "The passage says modification is 'equal in significance to nutrition or training.' The question gives 'diets' (= nutrition), so the blank = training.", evidence_table: [["As important as players' diets or the ______ they do","\"it is equal in significance to nutrition or training\"","'Training' matches 'the ______ they do' , nutrition corresponds to 'diets'"],["'Diets' = 'nutrition'","\"equal in significance to nutrition or training\"","The question paraphrases 'nutrition' as 'diets' and asks for the second item"]], common_mistake: "Some students write 'nutrition' because it is the first word they find. But the question has already provided 'diets' which matches nutrition , so the blank must be the second item: training. Others write 'practice' , but the exact word is 'training.'", paraphrases: [["nutrition","players' diets","paraphrase"],["training","the ______ they do","the blank answer"],["equal in significance to","as important as","paraphrase"]], self_assessment: ["I wrote 'nutrition' instead of 'training'","I did not recognise that 'diets' = 'nutrition'","I wrote 'practice' instead of the exact word 'training'","I found the wrong part of the passage"], tip: "When a question contains two comparisons, identify which one is already given and which is the blank. 'Diets' = nutrition (already given). The blank = training." },
+  Q11: { try_again: ["Find the sentence in Paragraph 7 describing what natural gut strings were made from.","What specific part of the animal was used to make the strings?"], explanation: "The passage says 'natural gut made from the outer layer of sheep or cow intestines' , intestines is the specific body part.", evidence_table: [["Natural strings made from the ______ of animals","\"natural gut made from the outer layer of sheep or cow intestines\"","'Intestines' is the specific body part of the animal named"],["The question says 'animals' broadly","\"sheep or cow intestines\"","The question generalises 'sheep or cow' as 'animals' , a typical IELTS paraphrase"]], common_mistake: "The most common wrong answer is 'gut.' But 'gut' refers to the type of string material, not the body part. Read the full sentence carefully , the answer comes at the end.", paraphrases: [["sheep or cow","animals","the question generalises"],["outer layer of","made from the ______ of","paraphrase"],["natural gut","natural strings","paraphrase"]], self_assessment: ["I wrote 'gut' because it appeared first in the sentence","I did not read carefully enough to find the specific body part","I did not know what 'intestines' means","I found the wrong paragraph"], tip: "Read the full sentence , the key word often appears at the end. The answer is the specific body part, not the name of the string material." },
+  Q12: { try_again: ["Find the sentence in Paragraph 9 about what Pete Sampras added to his rackets.","What specific objects were added, and what were they made of?"], explanation: "The passage says 'the addition of four to five lead weights onto his rackets.' The question gives 'metal' (= lead), so the blank = weights.", evidence_table: [["Metal ______ put into the frames","\"the addition of four to five lead weights onto his rackets\"","'Lead weights' matches 'metal ______' , lead is a metal, and 'weights' fills the blank"],["'Put into the frames'","\"the addition of \u2026 onto his rackets\"","'Addition onto his rackets' = 'put into the frames'"]], common_mistake: "The most common wrong answer is 'lead.' But the question already gives you 'metal' , what it asks for is what kind of metal object was added, which is 'weights.' Always check what the question is already telling you.", paraphrases: [["lead weights","metal ______","'lead' = metal; 'weights' = the blank"],["the addition of \u2026 onto his rackets","put into the frames","paraphrase"],["attributed to","contributed to","paraphrase"]], self_assessment: ["I wrote 'lead' instead of 'weights'","I found the right paragraph but missed the specific noun","I did not understand that 'lead' is already covered by 'metal'","I could not connect 'addition onto his rackets' with 'put into the frames'"], tip: "Read what the question already tells you before deciding what goes in the blank. 'Metal' is already given , the blank needs the object type: 'weights.'" },
+  Q13: { try_again: ["Find the sentence in Paragraph 10 about Goncalo Oliveira.","What specific part of the handle did he replace, and why?"], explanation: "The passage says 'Goncalo Oliveira replaced the original grips of his rackets with something thinner' , grips fills the blank directly.", evidence_table: [["Changed the ______ on his racket handles","\"Goncalo Oliveira replaced the original grips of his rackets with something thinner\"","'Grips' is what he replaced , the exact word fills the blank"],["'Changed' matches the passage","\"replaced the original grips\"","Replaced = changed; grips are the specific thing on the handles"]], common_mistake: "Some students write 'handles' , but this word is already in the question. The blank is asking for what on the handle was changed. The answer 'grips' is the exact word from the passage.", paraphrases: [["replaced","changed","paraphrase"],["original grips","the ______ on his racket handles","the blank = grips"],["something thinner","(the reason for the change)","additional context"]], self_assessment: ["I wrote 'handles' because it appeared in the question","I found the right paragraph but did not identify the specific noun","I did not know what 'grips' means in the context of a racket","I confused 'grips' with another type of handle covering"], tip: "If a word in the question already names a part (e.g., 'handles'), the blank asks for something more specific. Find the exact sentence and copy the noun precisely." }
+};
+
+function QuestionRow(_ref_qr) {
+  var q = _ref_qr.q, result = _ref_qr.result, isActive = _ref_qr.isActive, onClickRow = _ref_qr.onClickRow;
+  // stage: 'review' | 'tryagain' | 'revealed'
+  var _s1 = useState('review'), _sa1 = _slicedToArray(_s1, 2), stage = _sa1[0], setStage = _sa1[1];
+  var _s2 = useState(null), _sa2 = _slicedToArray(_s2, 2), retryAnswer = _sa2[0], setRetryAnswer = _sa2[1];
+  if (!result) return null;
+
+  var fb = FEEDBACK_DATA[q.question_id] || {};
+  var sa = q.studentAnswer;
+  var ca = q.correct_answer;
+  var caArr = Array.isArray(ca) ? ca : [ca];
+  var caStr = caArr.join(' + ');
+  var hasAnswer = sa !== null && sa !== undefined && String(sa).trim() !== '';
+  var isCorrect = hasAnswer && result.is_correct;
+  var qNum = q.question_id.replace('Q','');
+  var opts = q.options || [];
+  var isFill = q.type === 'notes_completion' || q.type === 'summary_completion' || q.type === 'fill_in_blank';
+
+  // ── Render the student's original answer (review stage) ──
+  function renderReviewOptions() {
+    if (isFill) {
+      return React.createElement('div', { style: { marginTop: 8, display: 'flex', alignItems: 'center', gap: 10 } },
+        React.createElement('span', { style: { fontSize: 12, color: 'var(--slate)' } }, 'Your answer:'),
+        React.createElement('span', { className: 'answer-pill ' + (isCorrect ? 'student-correct' : (hasAnswer ? 'student-wrong' : 'student-wrong')) },
+          (isCorrect ? '\u2713 ' : '\u2717 ') + (sa || '(no answer)')
+        )
+      );
+    }
+    return React.createElement('div', { className: 'options-list', style: { marginTop: 8 } },
+      opts.map(function(opt) {
+        var isStudent = sa === opt;
+        var cls = 'option-btn';
+        if (isStudent && isCorrect) cls += ' rpt-selected-correct';
+        else if (isStudent && !isCorrect) cls += ' rpt-selected-wrong';
+        return React.createElement('div', { key: opt, className: cls },
+          React.createElement('span', { className: 'option-radio' }),
+          isStudent ? (isCorrect ? '\u2713 ' : '\u2717 ') + opt : opt
+        );
+      })
+    );
+  }
+
+  // ── Render interactive options for Try Again ──
+  function renderTryAgainOptions() {
+    if (isFill) {
+      return React.createElement('div', { style: { marginTop: 8 } },
+        React.createElement('input', {
+          className: 'fill-input', type: 'text', placeholder: 'Type your answer\u2026',
+          value: retryAnswer || '',
+          onClick: function(e) { e.stopPropagation(); },
+          onChange: function(e) { e.stopPropagation(); setRetryAnswer(e.target.value); }
+        })
+      );
+    }
+    return React.createElement('div', { className: 'options-list', style: { marginTop: 8 } },
+      opts.map(function(opt) {
+        var sel = retryAnswer === opt;
+        return React.createElement('div', {
+          key: opt,
+          className: 'option-btn' + (sel ? ' option-selected' : ''),
+          onClick: function(e) { e.stopPropagation(); setRetryAnswer(opt); }
+        },
+          React.createElement('span', { className: 'option-radio' + (sel ? ' radio-selected' : '') }),
+          opt
+        );
+      })
+    );
+  }
+
+  // ── Render full answer reveal ──
+  function renderRevealOptions() {
+    var checkAns = retryAnswer;
+    var checkHas = checkAns !== null && checkAns !== undefined && String(checkAns).trim() !== '';
+    var checkCorrect = checkHas && caArr.indexOf(String(checkAns).trim().toLowerCase()) !== -1 ||
+                       checkHas && caArr.map(function(a){ return a.toLowerCase(); }).indexOf(String(checkAns).trim().toLowerCase()) !== -1;
+    if (isFill) {
+      return React.createElement('div', { style: { marginTop: 8 } },
+        React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 } },
+          React.createElement('span', { style: { fontSize: 11, color: 'var(--slate)', fontWeight: 700 } }, 'Your 2nd attempt:'),
+          React.createElement('span', { className: 'answer-pill ' + (checkCorrect ? 'student-correct' : 'student-wrong') },
+            (checkCorrect ? '\u2713 ' : '\u2717 ') + (checkAns || '(blank)')
+          )
+        ),
+        React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } },
+          React.createElement('span', { style: { fontSize: 11, color: 'var(--slate)', fontWeight: 700 } }, 'Correct answer:'),
+          React.createElement('span', { className: 'answer-pill correct-ans' }, '\u2713 ' + caStr)
+        )
+      );
+    }
+    return React.createElement('div', { className: 'options-list', style: { marginTop: 8 } },
+      opts.map(function(opt) {
+        var isRetry = retryAnswer === opt;
+        var isAns = caArr.indexOf(opt) !== -1;
+        var cls = 'option-btn';
+        if (isAns) cls += ' rpt-correct-answer';
+        else if (isRetry && !isAns) cls += ' rpt-selected-wrong';
+        return React.createElement('div', { key: opt, className: cls },
+          React.createElement('span', { className: 'option-radio' }),
+          isAns ? '\u2713 ' + opt : (isRetry ? '\u2717 ' + opt : opt)
+        );
+      })
+    );
+  }
+
+  // ── Tabbed feedback panel ──
+  var FB_TABS = ['Explanation', 'Common Mistake', 'Paraphrase', 'Tip', 'Self-Assessment'];
+  var _st = useState('Explanation'), _sta = _slicedToArray(_st, 2), activeTab = _sta[0], setActiveTab = _sta[1];
+
+  function renderFeedback() {
+    return React.createElement('div', { className: 'rpt-feedback' },
+      React.createElement('div', { className: 'fb-tab-bar', onClick: function(e) { e.stopPropagation(); } },
+        FB_TABS.map(function(t) {
+          return React.createElement('button', {
+            key: t,
+            className: 'fb-tab' + (activeTab === t ? ' fb-tab-active' : ''),
+            onClick: function(e) { e.stopPropagation(); setActiveTab(t); }
+          }, t);
+        })
+      ),
+      React.createElement('div', { className: 'fb-tab-body', onClick: function(e) { e.stopPropagation(); } },
+        activeTab === 'Explanation' && React.createElement('div', null,
+          React.createElement('p', { style: { fontSize: 12, color: 'var(--navy-mid)', lineHeight: 1.6, marginBottom: 10 } }, fb.explanation || result.explanation || ''),
+          fb.evidence_table && React.createElement('div', { style: { overflowX: 'auto' } },
+            React.createElement('table', { style: { width: '100%', borderCollapse: 'collapse', fontSize: 11 } },
+              React.createElement('thead', null,
+                React.createElement('tr', null,
+                  ['What the question says', 'What the passage says', 'Why this matters'].map(function(h) {
+                    return React.createElement('th', { key: h, style: { background: 'var(--indigo-light)', color: 'var(--indigo-dark)', padding: '5px 8px', textAlign: 'left', border: '1px solid var(--border)', fontWeight: 700 } }, h);
+                  })
+                )
+              ),
+              React.createElement('tbody', null,
+                fb.evidence_table.map(function(row, i) {
+                  return React.createElement('tr', { key: i },
+                    row.map(function(cell, j) {
+                      return React.createElement('td', { key: j, style: { padding: '5px 8px', border: '1px solid var(--border)', verticalAlign: 'top', color: 'var(--navy-mid)', lineHeight: 1.4 } }, cell);
+                    })
+                  );
+                })
+              )
+            )
+          )
+        ),
+        activeTab === 'Common Mistake' && React.createElement('div', { style: { background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 6, padding: '10px 12px' } },
+          React.createElement('div', { style: { fontWeight: 700, fontSize: 11, color: '#92400e', marginBottom: 6 } }, '⚠️ Common Mistake'),
+          React.createElement('p', { style: { fontSize: 12, color: '#78350f', lineHeight: 1.6, margin: 0 } }, fb.common_mistake || '')
+        ),
+        activeTab === 'Paraphrase' && React.createElement('div', null,
+          fb.paraphrases && React.createElement('table', { style: { width: '100%', borderCollapse: 'collapse', fontSize: 11 } },
+            React.createElement('thead', null,
+              React.createElement('tr', null,
+                ['Passage', 'Question', 'Relationship'].map(function(h) {
+                  return React.createElement('th', { key: h, style: { background: '#f0fdf4', color: 'var(--green)', padding: '5px 8px', textAlign: 'left', border: '1px solid var(--border)', fontWeight: 700 } }, h);
+                })
+              )
+            ),
+            React.createElement('tbody', null,
+              fb.paraphrases.map(function(row, i) {
+                return React.createElement('tr', { key: i },
+                  row.map(function(cell, j) {
+                    return React.createElement('td', { key: j, style: { padding: '5px 8px', border: '1px solid var(--border)', color: 'var(--navy-mid)', lineHeight: 1.4 } }, cell);
+                  })
+                );
+              })
+            )
+          )
+        ),
+        activeTab === 'Tip' && React.createElement('div', { style: { background: 'var(--indigo-light)', border: '1px solid var(--indigo)', borderRadius: 6, padding: '10px 12px' } },
+          React.createElement('div', { style: { fontWeight: 700, fontSize: 11, color: 'var(--indigo-dark)', marginBottom: 6 } }, '💡 Strategy Tip'),
+          React.createElement('p', { style: { fontSize: 12, color: 'var(--indigo-dark)', lineHeight: 1.6, margin: 0 } }, fb.tip || '')
+        ),
+        activeTab === 'Self-Assessment' && React.createElement('div', null,
+          React.createElement('div', { style: { fontWeight: 700, fontSize: 12, color: 'var(--navy)', marginBottom: 8 } }, 'Why did I get this wrong?'),
+          (fb.self_assessment || []).map(function(item, i) {
+            return React.createElement('label', { key: i, className: 'self-check-item' },
+              React.createElement('input', { type: 'checkbox', style: { marginRight: 8, flexShrink: 0 } }), item
+            );
+          })
+        )
+      )
+    );
+  }
+  return React.createElement('div', {
+    className: 'rpt-qblock' + (isCorrect ? ' rpt-qblock-correct' : ' rpt-qblock-wrong') + (isActive ? ' rpt-qblock-active' : ''),
+    onClick: onClickRow,
+    style: { cursor: 'pointer' }
+  },
+    // Question header
+    React.createElement('div', { style: { display: 'flex', alignItems: 'flex-start', gap: 8, padding: '12px 12px 8px' } },
+      React.createElement('span', { className: 'rpt-qnum ' + (isCorrect ? 'num-correct' : 'num-wrong') },
+        (isCorrect ? '\u2713' : '\u2717') + ' ' + qNum
+      ),
+      React.createElement('span', { className: 'question-label', style: { flex: 1, margin: 0, fontWeight: 500, fontSize: 13 } }, q.question_text)
+    ),
+
+    // Options area
+    React.createElement('div', { style: { padding: '0 12px 10px', borderBottom: stage === 'revealed' ? '1px solid var(--border)' : 'none' } },
+      stage === 'review' && renderReviewOptions(),
+      stage === 'tryagain' && React.createElement('div', null,
+        fb.try_again && fb.try_again.length > 0 && React.createElement('div', { style: { background: 'var(--indigo-light)', border: '1px solid var(--indigo)', borderRadius: 6, padding: '10px 12px', margin: '8px 0' } },
+          React.createElement('div', { style: { fontWeight: 700, fontSize: 11, color: 'var(--indigo-dark)', marginBottom: 6 } }, '\uD83D\uDCA1 Before answering, think about:'),
+          React.createElement('ol', { style: { margin: 0, paddingLeft: 18 } },
+            fb.try_again.map(function(hint, i) {
+              return React.createElement('li', { key: i, style: { fontSize: 12, color: 'var(--indigo-dark)', lineHeight: 1.6 } }, hint);
+            })
+          )
+        ),
+        renderTryAgainOptions()
+      ),
+      stage === 'revealed' && renderRevealOptions(),
+
+      // Action buttons
+      React.createElement('div', { style: { marginTop: 10, display: 'flex', gap: 8 } },
+        stage === 'review' && !isCorrect && React.createElement('button', {
+          className: 'btn-try-again',
+          onClick: function(e) { e.stopPropagation(); setStage('tryagain'); setRetryAnswer(null); }
+        }, '\uD83D\uDD04 Try Again'),
+        stage === 'review' && React.createElement('button', {
+          className: 'btn-reveal',
+          onClick: function(e) { e.stopPropagation(); setStage('revealed'); onClickRow(); }
+        }, stage === 'review' && !isCorrect ? 'Skip \u2192 Show Answer' : '\uD83D\uDCD6 Show Explanation'),
+        stage === 'tryagain' && React.createElement('button', {
+          className: 'btn-try-again',
+          disabled: !retryAnswer,
+          onClick: function(e) { e.stopPropagation(); if(retryAnswer) { setStage('revealed'); onClickRow(); } }
+        }, 'Check \u2192'),
+        stage === 'tryagain' && React.createElement('button', {
+          className: 'btn-reveal',
+          onClick: function(e) { e.stopPropagation(); setStage('revealed'); onClickRow(); }
+        }, 'Skip \u2192 Show Answer')
+      )
+    ),
+
+    // Revealed feedback
+    stage === 'revealed' && React.createElement('div', { style: { padding: '0 12px 12px' } },
+      renderFeedback()
+    )
+  );
+}
+
+function PassageDiagnosis(_ref_pd) {
+  var section = _ref_pd.section, enrichedQs = _ref_pd.enrichedQs, report = _ref_pd.report;
+  var _us2 = useState(null), _usa2 = _slicedToArray(_us2, 2), activeQuote = _usa2[0], setActiveQuote = _usa2[1];
+  var _us3 = useState(null), _usa3 = _slicedToArray(_us3, 2), activeQId = _usa3[0], setActiveQId = _usa3[1];
+  var _us4 = useState(50), _usa4 = _slicedToArray(_us4, 2), splitPct = _usa4[0], setSplitPct = _usa4[1];
+  var _us5 = useState(false), _usa5 = _slicedToArray(_us5, 2), dragging = _usa5[0], setDragging = _usa5[1];
+  var passagePaneRef = useRef(null);
+  var containerRef2 = useRef(null);
+
+  var handleClick = function(qId, evidence, claudeQuote, location) {
+    if (activeQId === qId) { setActiveQId(null); setActiveQuote(null); return; }
+    setActiveQId(qId);
+    var effectiveQuote = evidence || claudeQuote || null;
+    setActiveQuote(effectiveQuote);
+    setTimeout(function() {
+      if (passagePaneRef.current) {
+        var mark = passagePaneRef.current.querySelector("mark.passage-highlight");
+        if (mark) { mark.scrollIntoView({ behavior: "smooth", block: "center" }); }
+        else if (location) {
+          var paras = passagePaneRef.current.querySelectorAll("p");
+          var m2 = location.match(/paragraph\s*(\d+)/i);
+          if (m2) { var pi = parseInt(m2[1], 10) - 1; if (paras[pi]) paras[pi].scrollIntoView({ behavior: "smooth", block: "center" }); }
+        }
+      }
+    }, 50);
+  };
+
+  var onDividerMouseDown = function(e) {
+    e.preventDefault();
+    setDragging(true);
+    var onMove = function(ev) {
+      if (!containerRef2.current) return;
+      var rect = containerRef2.current.getBoundingClientRect();
+      var pct = Math.min(75, Math.max(25, ((ev.clientX - rect.left) / rect.width) * 100));
+      setSplitPct(pct);
+    };
+    var onUp = function() {
+      setDragging(false);
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  };
+
+  return React.createElement("div", { className: "passage-diagnosis-layout", ref: containerRef2 },
+    React.createElement("div", { className: "pd-passage", ref: passagePaneRef, style: { width: splitPct + "%" } },
+      React.createElement(HighlightedPassage, { passage: section.passage, activeQuote: activeQuote })
+    ),
+    React.createElement("div", {
+      className: "pd-divider" + (dragging ? " dragging" : ""),
+      onMouseDown: onDividerMouseDown
+    },
+      React.createElement("div", { className: "pd-divider-handle" }, "\u21d4")
+    ),
+    React.createElement("div", { className: "pd-questions", style: { flex: 1, minWidth: 0 } },
+      section.question_groups.map(function(group) {
+        return React.createElement("div", { key: group.group_id },
+          React.createElement("div", { className: "group-header-bar" },
+            React.createElement("h3", null, group.type_label),
+            group.group_id === "G1"
+              ? React.createElement("div", { className: "strategy-reminder" },
+                  React.createElement("p", null, React.createElement("strong", null, "\uD83C\uDFAF Key Strategy: "), "Always compare MEANING, not just vocabulary."),
+                  React.createElement("p", null, React.createElement("strong", null, "TRUE"), " , the statement agrees with the passage."),
+                  React.createElement("p", null, React.createElement("strong", null, "FALSE"), " , the passage says the opposite."),
+                  React.createElement("p", null, React.createElement("strong", null, "NOT GIVEN"), " , the passage gives no information on this."),
+                  React.createElement("p", { style: { color: "var(--red)", fontStyle: "italic" } }, "Common trap: seeing similar keywords and assuming the meaning is the same.")
+                )
+              : React.createElement("div", { className: "strategy-reminder" },
+                  React.createElement("p", null, React.createElement("strong", null, "\uD83C\uDFAF Key Strategy: "), "Use ONE WORD ONLY from the passage , copy it exactly as written."),
+                  React.createElement("p", null, "\u2022 Predict what kind of word is needed (noun, verb, adjective)."),
+                  React.createElement("p", null, "\u2022 Use surrounding words in the notes to find the right part of the passage."),
+                  React.createElement("p", null, "\u2022 Do not paraphrase , copy the exact word."),
+                  React.createElement("p", null, "\u2022 Check the word fits grammatically into the gap.")
+                )
+          ),
+          group.questions.map(function(q) {
+            var enriched = enrichedQs.find(function(e) { return e.question_id === q.question_id; });
+            var r = report[q.question_id];
+            return React.createElement(QuestionRow, {
+              key: q.question_id,
+              q: enriched || q,
+              result: r,
+              isActive: activeQId === q.question_id,
+              onClickRow: function() { handleClick(q.question_id, q.evidence, r && r.answer_quote, r && r.passage_location); }
+            });
+          })
+        );
+      })
+    )
+  );
+}
+
+// ─────────────────────────────────────────────
+// MAIN APP
+// ─────────────────────────────────────────────
+function App() {
+  var _useState11 = useState("splash"),
+    _useState12 = _slicedToArray(_useState11, 2),
+    screen = _useState12[0],
+    setScreen = _useState12[1];
+  var _useState13 = useState({}),
+    _useState14 = _slicedToArray(_useState13, 2),
+    answers = _useState14[0],
+    setAnswers = _useState14[1];
+  var _usv1 = useState(false), _usv2 = _slicedToArray(_usv1, 2), keyValidated = _usv2[0], setKeyValidated = _usv2[1];
+  var _usv3 = useState(false), _usv4 = _slicedToArray(_usv3, 2), validating = _usv4[0], setValidating = _usv4[1];
+  var _usv5 = useState(null), _usv6 = _slicedToArray(_usv5, 2), keyError = _usv6[0], setKeyError = _usv6[1];
+  var _useState15 = useState(""),
+    _useState16 = _slicedToArray(_useState15, 2),
+    apiKey = _useState16[0],
+    setApiKey = _useState16[1];
+  var _useState17 = useState(null),
+    _useState18 = _slicedToArray(_useState17, 2),
+    report = _useState18[0],
+    setReport = _useState18[1];
+  var _useState19 = useState(null),
+    _useState20 = _slicedToArray(_useState19, 2),
+    error = _useState20[0],
+    setError = _useState20[1];
+  // active state: which section + group is showing
+  var _useState21 = useState(0),
+    _useState22 = _slicedToArray(_useState21, 2),
+    activeSec = _useState22[0],
+    setActiveSec = _useState22[1];
+  var _useState23 = useState(0),
+    _useState24 = _slicedToArray(_useState23, 2),
+    activeGrp = _useState24[0],
+    setActiveGrp = _useState24[1];
+  // divider width (passage pane width in px)
+  var containerRef = useRef(null);
+  var _useState25 = useState(null),
+    _useState26 = _slicedToArray(_useState25, 2),
+    passWidth = _useState26[0],
+    setPassWidth = _useState26[1]; // null = 50%
+  var questionsRef = useRef(null);
+  var handleAnswer = function handleAnswer(qId, val) {
+    return setAnswers(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, qId, val));
+    });
+  };
+
+  // Build all groups flat list for prev/next navigation
+  var allGroups = [];
+  testData.sections.forEach(function (sec, si) {
+    sec.question_groups.forEach(function (grp, gi) {
+      return allGroups.push({
+        si: si,
+        gi: gi,
+        sec: sec,
+        grp: grp
+      });
+    });
+  });
+  var currentGroupIdx = allGroups.findIndex(function (g) {
+    return g.si === activeSec && g.gi === activeGrp;
+  });
+  var hasPrev = currentGroupIdx > 0;
+  var hasNext = currentGroupIdx < allGroups.length - 1;
+  var goToGroup = function goToGroup(si, gi) {
+    setActiveSec(si);
+    setActiveGrp(gi);
+    if (questionsRef.current) questionsRef.current.scrollTop = 0;
+  };
+  var goPrev = function goPrev() {
+    if (hasPrev) {
+      var g = allGroups[currentGroupIdx - 1];
+      goToGroup(g.si, g.gi);
+    }
+  };
+  var goNext = function goNext() {
+    if (hasNext) {
+      var g = allGroups[currentGroupIdx + 1];
+      goToGroup(g.si, g.gi);
+    }
+  };
+
+  // Clicking a q-pill in bottom nav → navigate to that group
+  var goToQ = function goToQ(qId) {
+    var entry = NAV_MAP.find(function (n) {
+      return n.qId === qId;
+    });
+    if (entry) goToGroup(entry.sectionIdx, entry.groupIdx);
+  };
+
+  // Divider drag
+  var handleDividerDrag = function handleDividerDrag(clientX) {
+    if (!containerRef.current) return;
+    var rect = containerRef.current.getBoundingClientRect();
+    var newW = Math.min(Math.max(clientX - rect.left, 280), rect.width - 285);
+    setPassWidth(newW);
+  };
+  var allQs = getAllQuestions();
+  var isAnswered = function isAnswered(q) {
+    var a = answers[q.question_id];
+    if (q.type === "mcq_two") return Array.isArray(a) && a.length === 2;
+    if (q.type === "fill_in_blank" || q.type === "notes_completion" || q.type === "summary_completion") return (a || "").trim().length > 0;
+    return !!a;
+  };
+  var answeredCount = allQs.filter(isAnswered).length;
+  var validateKey = function validateKey() {
+    var cleanKey = apiKey.replace(/[^\x20-\x7E]/g, "").trim();
+    if (!cleanKey) { setKeyError("Please enter your API key."); return; }
+    setValidating(true); setKeyError(null);
+    fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-api-key": cleanKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+      body: JSON.stringify({ model: "claude-haiku-4-5", max_tokens: 10, messages: [{ role: "user", content: "Hi" }] })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      setValidating(false);
+      if (d.error) { setKeyError("Invalid key: " + (d.error.message || "check and try again.")); }
+      else { setKeyValidated(true); }
+    })
+    .catch(function() { setValidating(false); setKeyError("Could not connect. Check your internet connection."); });
+  };
+
+  var callClaude = function callClaude() {
+    var cleanKey = apiKey.replace(/[^\x20-\x7E]/g, "").trim();
+    if (!cleanKey) {
+      alert("Please enter your Anthropic API key in the top bar before submitting.");
+      return;
+    }
+    setScreen("loading");
+    setError(null);
+    fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": cleanKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5",
+        max_tokens: 4096,
+        system: SYSTEM_PROMPT,
+        messages: [
+          { role: "user", content: buildUserMessage(answers) }
+        ]
+      })
+    })
+    .then(function(resp) { return resp.json(); })
+    .then(function(data) {
+      if (data.error) throw new Error(data.error.message || "Claude API error");
+      var text = data.content[0].text;
+      var jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error("No valid JSON in response. Try again.");
+      var parsed = JSON.parse(jsonMatch[0]);
+      if (!parsed.results || !Array.isArray(parsed.results)) throw new Error("Unexpected response format. Try again.");
+      var map = {};
+      parsed.results.forEach(function(r) { map[r.question_id] = r; });
+      setReport(map);
+      setScreen("report");
+    })
+    .catch(function(err) {
+      setError(err.message || "Something went wrong");
+      setScreen("report");
+    });
+  };
+  // IELTS Academic Reading band score conversion table
+  var IELTS_BAND_TABLE = {40:9,39:9,38:8.5,37:8.5,36:8,35:7.5,34:7,33:7,32:6.5,31:6.5,30:6,29:6,28:5.5,27:5.5,26:5,25:5,24:5,23:4.5,22:4.5,21:4,20:4,19:4,18:3.5,17:3.5,16:3,15:3,14:3,13:2.5};
+  function toBand(n) { var b = IELTS_BAND_TABLE[n]; return b !== undefined ? (b % 1 === 0 ? b+".0" : b.toFixed(1)) : "< 3.0"; }
+  function typeLabel(t) {
+    if (t === "tfng") return "True / False / Not Given";
+    if (t === "yyng") return "Yes / No / Not Given";
+    if (t === "notes_completion" || t === "summary_completion" || t === "fill_in_blank") return "Completion Questions";
+    if (t === "matching_info") return "Matching Questions";
+    if (t === "mcq_one" || t === "mcq_two") return "Multiple Choice";
+    return "Other";
+  }
+  var computeScores = function computeScores() {
+    if (!report) return {};
+    var total = 0, correct = 0;
+    var bySection = {}, byType = {}, allVocab = {};
+    for (var _i = 0; _i < allQs.length; _i++) {
+      var q = allQs[_i];
+      var r = report[q.question_id];
+      if (!r) continue;
+      // Client-side override: if student gave no answer, never count as correct
+      var studentAns = answers[q.question_id];
+      var hasAnswer = q.type === "mcq_two"
+        ? Array.isArray(studentAns) && studentAns.length > 0
+        : studentAns !== null && studentAns !== undefined && String(studentAns).trim() !== "";
+      var isCorrect = hasAnswer && r.is_correct;
+      var marks = 1;
+      total += marks;
+      if (isCorrect) correct += marks;
+      if (!bySection[q.section_id]) bySection[q.section_id] = { correct: 0, total: 0 };
+      bySection[q.section_id].total += marks;
+      if (isCorrect) bySection[q.section_id].correct += marks;
+      var tl = typeLabel(q.type);
+      if (!byType[tl]) byType[tl] = { correct: 0, total: 0 };
+      byType[tl].total += marks;
+      if (isCorrect) byType[tl].correct += marks;
+      var vocab = r.key_vocabulary || [];
+      for (var _j = 0; _j < vocab.length; _j++) {
+        var v = vocab[_j]; if (!allVocab[v.word]) allVocab[v.word] = v;
+      }
+    }
+    return { total: total, correct: correct, bySection: bySection, byType: byType, allVocab: allVocab };
+  };
+  var enrichedQs = allQs.map(function (q) {
+    return _objectSpread(_objectSpread({}, q), {}, {
+      studentAnswer: answers[q.question_id]
+    });
+  });
+  var scores = screen === "report" && report ? computeScores() : null;
+
+  // Current section & group for test screen
+  var currentSec = testData.sections[activeSec];
+  var currentGrp = currentSec.question_groups[activeGrp];
+
+  // Which q-ids are in which section for bottom nav
+  var sectionQIds = testData.sections.map(function (sec) {
+    return sec.question_groups.flatMap(function (grp) {
+      return grp.questions.map(function (q) {
+        return q.question_id;
+      });
+    });
+  });
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("style", {
+    dangerouslySetInnerHTML: {
+      __html: css
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "topbar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "topbar-left"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "topbar-brand"
+  }, "IELTS ", /*#__PURE__*/React.createElement("span", null, "Reading Practice")))), screen === "splash" && /*#__PURE__*/React.createElement("div", { className: "splash-screen" },
+    /*#__PURE__*/React.createElement("div", { className: "splash-card" },
+      /*#__PURE__*/React.createElement("h1", { className: "splash-title" }, "IELTS Reading Practice"),
+      /*#__PURE__*/React.createElement("div", { className: "splash-pills" },
+        /*#__PURE__*/React.createElement("span", { className: "splash-pill" }, "True / False / Not Given"),
+        /*#__PURE__*/React.createElement("span", { className: "splash-pill" }, "Notes Completion")
+      ),
+      /*#__PURE__*/React.createElement("div", { className: "splash-warmup" },
+        /*#__PURE__*/React.createElement("p", null,
+          "Today you are going to read about ", /*#__PURE__*/React.createElement("strong", null, "tennis rackets"), ". Yes, really. \uD83C\uDFBE Not the most exciting topic in the world, we know. But inside this passage is a great story about a British tennis player."
+        ),
+        /*#__PURE__*/React.createElement("p", null,
+          "Everyone thought of him as \"good but not good enough.\" \uD83D\uDE23 People did not believe in him. He kept losing the big matches. Then one day, he changed something very small on his racket, and slowly, everything changed. \u2728 A few years later, he was ranked ", /*#__PURE__*/React.createElement("strong", null, "number one in the world"), ". \uD83C\uDFC6"
+        ),
+        /*#__PURE__*/React.createElement("p", { style: { marginBottom: 0, fontStyle: "italic" } },
+          "Before you start reading, take five seconds to guess: who is this player? \uD83E\uDD14 You will find the answer in the very first paragraph."
+        )
+      ),
+      /*#__PURE__*/React.createElement("div", { className: "splash-divider" }),
+      /*#__PURE__*/React.createElement("div", { className: "splash-key-section" },
+        /*#__PURE__*/React.createElement("div", { className: "splash-key-label" },
+          /*#__PURE__*/React.createElement("span", null, "\uD83D\uDD11 Anthropic API Key"),
+        ),
+        /*#__PURE__*/React.createElement("div", { className: "splash-key-row" },
+          /*#__PURE__*/React.createElement("input", {
+            type: "password", placeholder: "sk-ant-...", value: apiKey, className: "splash-key-input",
+            onChange: function(e) { setApiKey(e.target.value.replace(/[^\x20-\x7E]/g, "").trim()); setKeyValidated(false); setKeyError(null); },
+            onKeyDown: function(e) { if(e.key==="Enter") validateKey(); }
+          }),
+          /*#__PURE__*/React.createElement("button", {
+            className: "splash-validate-btn" + (keyValidated ? " validated" : ""),
+            onClick: validateKey,
+            disabled: validating || keyValidated
+          }, validating ? "Checking..." : keyValidated ? "\u2713 Valid" : "Validate")
+        ),
+        keyError && /*#__PURE__*/React.createElement("div", { className: "splash-key-error" }, "\u26A0\uFE0F ", keyError),
+        keyValidated && /*#__PURE__*/React.createElement("div", { className: "splash-key-ok" }, "\u2705 Key validated! You're ready to start.")
+      ),
+      /*#__PURE__*/React.createElement("button", {
+        className: "splash-start-btn",
+        disabled: !keyValidated,
+        onClick: function() { setScreen("test"); }
+      }, keyValidated ? "Start Practice \u2192" : "Validate your key to continue")
+    )
+  ), screen === "test" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "part-header-bar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "part-header-desc"
+  }, "Read the passage and answer questions 1\u201313.")), /*#__PURE__*/React.createElement("div", {
+    className: "split-container",
+    ref: containerRef
+  }, /*#__PURE__*/React.createElement(PassagePane, {
+    section: currentSec,
+    width: passWidth ? "".concat(passWidth, "px") : "50%"
+  }), /*#__PURE__*/React.createElement(Divider, {
+    onDrag: handleDividerDrag
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "questions-pane",
+    ref: questionsRef
+  }, /*#__PURE__*/React.createElement(QuestionGroup, {
+    group: currentGrp,
+    answers: answers,
+    onChange: handleAnswer
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 24
+    }
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "bottom-nav"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bottom-pills"
+  }, sectionQIds[activeSec].map(function (qId) {
+    var _entry$groupIdx;
+    var entry = NAV_MAP.find(function (n) { return n.qId === qId; });
+    var rawLabel = qId.replace("Q", "").replace(/_\d+$/, "");
+    var isAns = isAnswered(allQs.find(function (q) { return q.question_id === qId; }) || {});
+    var isCur = activeGrp === ((_entry$groupIdx = entry === null || entry === void 0 ? void 0 : entry.groupIdx) !== null && _entry$groupIdx !== void 0 ? _entry$groupIdx : 0);
+    var displayLabel = rawLabel.includes("_") ? rawLabel.split("_")[0] : rawLabel;
+    return /*#__PURE__*/React.createElement("button", {
+      key: qId,
+      className: "q-pill".concat(isAns ? " answered" : "").concat(isCur ? " active" : ""),
+      onClick: function () { return goToQ(qId); },
+      title: "Q".concat(displayLabel)
+    }, displayLabel);
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "nav-divider"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "bottom-right"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "nav-btn",
+    onClick: goPrev,
+    disabled: !hasPrev,
+    title: "Previous group"
+  }, "←"), /*#__PURE__*/React.createElement("button", {
+    className: "nav-btn",
+    onClick: goNext,
+    disabled: !hasNext,
+    title: "Next group"
+  }, "→"), /*#__PURE__*/React.createElement("div", {
+    className: "nav-divider"
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "btn-submit-final",
+    onClick: callClaude
+  }, "Submit \u2192"), report && /*#__PURE__*/React.createElement("button", {
+    className: "btn-submit-final",
+    style: { background: "var(--green)" },
+    onClick: function() { setScreen("report"); }
+  }, "View Report \u2192")))), screen === "loading" && /*#__PURE__*/React.createElement("div", {
+    className: "loading-screen"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "loading-icon"
+  }), /*#__PURE__*/React.createElement("h2", null, "Analysing your answers", /*#__PURE__*/React.createElement("span", {
+    className: "loading-dots"
+  }, /*#__PURE__*/React.createElement("span", null, "."), /*#__PURE__*/React.createElement("span", null, "."), /*#__PURE__*/React.createElement("span", null, "."))), /*#__PURE__*/React.createElement("p", null, "Claude is reviewing your answers , this takes about 10\u201315 seconds")), screen === "report" && /*#__PURE__*/React.createElement("div", {
+    className: "report-page"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "report-layout"
+  }, error && /*#__PURE__*/React.createElement("div", {
+    className: "error-state"
+  }, /*#__PURE__*/React.createElement("h3", null, "Analysis failed"), /*#__PURE__*/React.createElement("p", null, error), /*#__PURE__*/React.createElement("button", {
+    className: "btn-retry",
+    onClick: callClaude
+  }, "Retry")), report && scores && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "report-header"
+  }, /*#__PURE__*/React.createElement("h1", null, "Your IELTS Reading Report")), /*#__PURE__*/React.createElement("div", {
+    className: "report-section"
+  }, /*#__PURE__*/React.createElement("h2", null, "\uD83D\uDCCA Results"), /*#__PURE__*/React.createElement("div", {
+    style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: { background: "white", border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: "10px 20px", display: "flex", alignItems: "baseline", gap: 6, flexShrink: 0 }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: { fontSize: 28, fontWeight: 700, color: "var(--navy)" }
+  }, scores.correct), /*#__PURE__*/React.createElement("span", {
+    style: { fontSize: 15, color: "var(--slate)" }
+  }, "/ 13"), /*#__PURE__*/React.createElement("span", {
+    style: { fontSize: 13, color: "var(--slate)", marginLeft: 6 }
+  }, Math.round(scores.correct / 13 * 100), "% correct"))), /*#__PURE__*/React.createElement("div", {
+    className: "breakdown-grid"
+  }, Object.entries(scores.byType).map(function (_ref7) {
+    var _ref8 = _slicedToArray(_ref7, 2),
+      type = _ref8[0],
+      sc = _ref8[1];
+    var pct = Math.round(sc.correct / sc.total * 100);
+    var col = pct >= 70 ? "var(--green)" : pct >= 50 ? "var(--amber)" : "var(--red)";
+    return /*#__PURE__*/React.createElement("div", {
+      key: type,
+      className: "breakdown-card"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "type-name"
+    }, type), /*#__PURE__*/React.createElement("div", {
+      className: "progress-bar"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "progress-fill",
+      style: { width: "".concat(pct, "%"), background: col }
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "pct"
+    }, sc.correct, "/", sc.total, " (", pct, "%)"));
+  }))), React.createElement("div", { className: "report-section" },
+  React.createElement("h2", null, "\uD83D\uDD0D Per-Question Diagnosis"),
+  testData.sections.filter(function(s){ return s.section_id === "S1"; }).map(function (section) {
+    return React.createElement("div", { key: section.section_id, style: { marginBottom: 32 } },
+      React.createElement("div", { className: "section-chip" }, section.title, " , ", section.passage_title),
+      React.createElement(PassageDiagnosis, { section: section, enrichedQs: enrichedQs, report: report })
+    );
+  }),
+
+  ), /*#__PURE__*/React.createElement("div", {
+    style: { textAlign: "center", marginTop: 32, display: "flex", gap: 12, justifyContent: "center" }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn-submit-report",
+    style: { background: "var(--slate)" },
+    onClick: function onClick() { setScreen("test"); }
+  }, "\u2190 Back to answers"), /*#__PURE__*/React.createElement("button", {
+    className: "btn-submit-report",
+    onClick: function onClick() {
+      setScreen("test");
+      setReport(null);
+      setAnswers({});
+      setActiveSec(0);
+      setActiveGrp(0);
+    }
+  }, "\u21BA Start over"))))));
+}
+
+
+const _root = ReactDOM.createRoot(document.getElementById("root"));
+_root.render(React.createElement(App));
+
+</script>
+</body>
+</html>

@@ -1638,13 +1638,6 @@ function App() {
     _useState14 = _slicedToArray(_useState13, 2),
     answers = _useState14[0],
     setAnswers = _useState14[1];
-  var _usv1 = useState(false), _usv2 = _slicedToArray(_usv1, 2), keyValidated = _usv2[0], setKeyValidated = _usv2[1];
-  var _usv3 = useState(false), _usv4 = _slicedToArray(_usv3, 2), validating = _usv4[0], setValidating = _usv4[1];
-  var _usv5 = useState(null), _usv6 = _slicedToArray(_usv5, 2), keyError = _usv6[0], setKeyError = _usv6[1];
-  var _useState15 = useState(""),
-    _useState16 = _slicedToArray(_useState15, 2),
-    apiKey = _useState16[0],
-    setApiKey = _useState16[1];
   var _useState17 = useState(null),
     _useState18 = _slicedToArray(_useState17, 2),
     report = _useState18[0],
@@ -1733,42 +1726,18 @@ function App() {
     return !!a;
   };
   var answeredCount = allQs.filter(isAnswered).length;
-  var validateKey = function validateKey() {
-    var cleanKey = apiKey.replace(/[^\x20-\x7E]/g, "").trim();
-    if (!cleanKey) { setKeyError("Please enter your API key."); return; }
-    setValidating(true); setKeyError(null);
-    fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-api-key": cleanKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-      body: JSON.stringify({ model: "claude-haiku-4-5", max_tokens: 10, messages: [{ role: "user", content: "Hi" }] })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      setValidating(false);
-      if (d.error) { setKeyError("Invalid key: " + (d.error.message || "check and try again.")); }
-      else { setKeyValidated(true); }
-    })
-    .catch(function() { setValidating(false); setKeyError("Could not connect. Check your internet connection."); });
-  };
+  // URL của Cloudflare Worker (proxy) bạn deploy — xem HUONG_DAN_DEPLOY.md
+  var PROXY_URL = "ielts-reading-analyser-proxy.duy-doan6.workers.dev";
 
   var callClaude = function callClaude() {
-    var cleanKey = apiKey.replace(/[^\x20-\x7E]/g, "").trim();
-    if (!cleanKey) {
-      alert("Please enter your Anthropic API key in the top bar before submitting.");
-      return;
-    }
     setScreen("loading");
     setError(null);
-    fetch("https://api.anthropic.com/v1/messages", {
+    fetch(PROXY_URL, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "x-api-key": cleanKey,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "claude-haiku-4-5",
         max_tokens: 4096,
         system: SYSTEM_PROMPT,
         messages: [
@@ -1884,30 +1853,10 @@ function App() {
         )
       ),
       /*#__PURE__*/React.createElement("div", { className: "splash-divider" }),
-      /*#__PURE__*/React.createElement("div", { className: "splash-key-section" },
-        /*#__PURE__*/React.createElement("div", { className: "splash-key-label" },
-          /*#__PURE__*/React.createElement("span", null, "\uD83D\uDD11 Anthropic API Key"),
-        ),
-        /*#__PURE__*/React.createElement("div", { className: "splash-key-row" },
-          /*#__PURE__*/React.createElement("input", {
-            type: "password", placeholder: "sk-ant-...", value: apiKey, className: "splash-key-input",
-            onChange: function(e) { setApiKey(e.target.value.replace(/[^\x20-\x7E]/g, "").trim()); setKeyValidated(false); setKeyError(null); },
-            onKeyDown: function(e) { if(e.key==="Enter") validateKey(); }
-          }),
-          /*#__PURE__*/React.createElement("button", {
-            className: "splash-validate-btn" + (keyValidated ? " validated" : ""),
-            onClick: validateKey,
-            disabled: validating || keyValidated
-          }, validating ? "Checking..." : keyValidated ? "\u2713 Valid" : "Validate")
-        ),
-        keyError && /*#__PURE__*/React.createElement("div", { className: "splash-key-error" }, "\u26A0\uFE0F ", keyError),
-        keyValidated && /*#__PURE__*/React.createElement("div", { className: "splash-key-ok" }, "\u2705 Key validated! You're ready to start.")
-      ),
       /*#__PURE__*/React.createElement("button", {
         className: "splash-start-btn",
-        disabled: !keyValidated,
         onClick: function() { setScreen("test"); }
-      }, keyValidated ? "Start Practice \u2192" : "Validate your key to continue")
+      }, "Start Practice \u2192")
     )
   ), screen === "test" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "part-header-bar"

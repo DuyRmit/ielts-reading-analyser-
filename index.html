@@ -1727,7 +1727,7 @@ function App() {
   };
   var answeredCount = allQs.filter(isAnswered).length;
   // URL của Cloudflare Worker (proxy) bạn deploy — xem HUONG_DAN_DEPLOY.md
-  var PROXY_URL = "ielts-reading-analyser-proxy.duy-doan6.workers.dev";
+  var PROXY_URL = "https://ielts-reading-analyser-proxy.duy-doan6.workers.dev";
 
   var callClaude = function callClaude() {
     setScreen("loading");
